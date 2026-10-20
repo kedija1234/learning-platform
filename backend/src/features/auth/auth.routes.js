@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as authController from './auth.controller.js';
 import { registerValidator, loginValidator } from './auth.validation.js';
 import { validateRequest } from '../../middleware/validate.js';
-import { authenticateToken } from '../../middleware/auth.js';
+import { authenticateToken, requireRole } from '../../middleware/auth.js';
 
 const router = Router();
 
@@ -39,6 +39,23 @@ router.get(
   '/me',
   authenticateToken,
   authController.getMe
+);
+
+/**
+ * @route   GET /api/auth/role-check
+ * @desc    Verifies role-based authorization middleware
+ * @access  Private (Requires mentor or admin role)
+ */
+router.get(
+  '/role-check',
+  authenticateToken,
+  requireRole('mentor', 'admin'),
+  (req, res) => {
+    res.json({
+      success: true,
+      message: `Access granted for role: ${req.user.role}`,
+    });
+  }
 );
 
 export default router;

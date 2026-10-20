@@ -8,7 +8,11 @@ export function errorHandler(err, req, res, next) {
   const message = err.message || 'Internal server error';
 
   // Log error details for server diagnostics
-  console.error(`[Error] ${req.method} ${req.originalUrl}:`, err);
+  if (statusCode >= 500) {
+    console.error(`[Server Error] ${req.method} ${req.originalUrl}:`, err);
+  } else if (process.env.NODE_ENV !== 'test') {
+    console.warn(`[Client Error ${statusCode}] ${req.method} ${req.originalUrl}: ${message}`);
+  }
 
   res.status(statusCode).json({
     success: false,
