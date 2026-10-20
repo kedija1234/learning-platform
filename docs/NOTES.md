@@ -121,3 +121,66 @@ Platform: University Learning & Internship Platform
 
 ### Known Limitations
 - **Open Registration for Privileged Roles**: The platform currently permits self-registration with the `mentor` and `coordinator` roles to simplify local demonstration and evaluation. In a production educational institution environment, self-registration would typically be restricted to students, while mentor and coordinator roles would require administrative invitations, academic department approval, or email domain verification workflows.
+
+---
+
+## Phase 3: Courses, Resources, Assignments & Enrollments
+
+### What Was Built
+1. **Feature-Based Architecture (`backend/src/features/courses/`)**:
+   - `courses.validation.js`: Input schemas for course creation, learning resources, assignments with due dates, integer route params (`:id`, `:resourceId`, `:assignmentId`), and pagination query parameters (`page`, `limit`, `search`).
+   - `courses.service.js`: Complete business logic layer:
+     - `listCourses`: Paginated course listing with keyword search across `title` and `description` using `LIKE`. Includes total enrolled students count and mentor names.
+     - `getCourseById`: Returns detailed course record, attached resources, assignments (ordered by due date), and current viewer's enrollment status and `progress_percent`.
+     - `createCourse`: Restricts course creation to mentors/admins; assigns ownership.
+     - `updateCourse` & `deleteCourse`: Restricts modifications to owning mentors or administrators. Cascades delete to enrollments, resources, and assignments.
+     - `addResource` & `deleteResource`: Allows owning mentor to attach/detach learning materials and links.
+     - `addAssignment` & `deleteAssignment`: Allows owning mentor to post assignments with instructions and MySQL-compatible due dates.
+     - `enrollStudent`: Enrolls students with initial 0% progress; prevents duplicate enrollments with 409 Conflict.
+     - `getEnrolledCourses`: Returns paginated courses enrolled by the authenticated student.
+     - `getCourseStudents`: Allows owning mentors to view enrolled students and their progress.
+   - `courses.controller.js`: HTTP handlers mapping request parameters to service operations with standard JSON responses.
+   - `courses.routes.js`: Express router mounting 12 endpoints protected with `authenticateToken` and `requireRole`.
+
+2. **TiDB Cloud Compatibility**:
+   - Pagination bounds (`safeLimit` and `safeOffset`) are strictly validated and clamped integers interpolated directly into the query, adhering to TiDB's restriction against `LIMIT ?` and `OFFSET ?` placeholders.
+   - Search queries use standard SQL `LIKE %term%` rather than unsupported `FULLTEXT` indexes.
+   - Foreign keys use `ON DELETE CASCADE` for automated referential cleanup.
+
+3. **Multi-Suite Test Runner (`backend/tests/runner.js`)**:
+   - Automatically discovers all `*.test.js` files in `backend/tests/`.
+   - Executes each suite in an isolated Node process with clean stdio and environment inheritance, eliminating connection pool collision and cross-file state leakage.
+
+4. **Automated Test Suite (`backend/tests/courses.test.js`)**:
+   - 21 automated test cases verifying:
+     - Mentor course creation (201)
+     - Student course creation rejection (403)
+     - Course listing with pagination metadata (200)
+     - Keyword search filtering (200)
+     - Owning mentor adding resource (201)
+     - Non-owning mentor resource rejection (403)
+     - Owning mentor adding assignment (201)
+     - Non-owning mentor assignment rejection (403)
+     - Student course enrollment (201)
+     - Duplicate enrollment rejection (409)
+     - Mentor enrollment rejection (403)
+     - Student enrolled courses list (200)
+     - Detailed course inspection with resources and enrollment flag (200)
+     - Owning mentor viewing enrolled students list (200)
+     - Non-owning mentor student list rejection (403)
+     - Course updates (200)
+     - Resource deletion (200)
+     - Assignment deletion (200)
+     - Non-owning mentor course deletion rejection (403)
+     - Owning mentor course deletion (200)
+
+### Key Technical Decisions
+- **Ownership Verification Helper**: Created `verifyCourseOwnership` to enforce that only the course's creator or an administrator can add resources, add assignments, view student progress, update, or delete the course.
+- **Route Specificity Order**: Mounted `/api/courses/enrolled/me` before `/api/courses/:id` in `courses.routes.js` to prevent Express from treating the literal string `'enrolled'` as a numeric `:id` parameter.
+- **DATETIME Formatting**: Formatted JavaScript ISO date strings into standard SQL `YYYY-MM-DD HH:MM:SS` format prior to insertion into MySQL/TiDB `DATETIME` columns.
+
+### Problems Found and How They Were Fixed
+- **Issue**: Attempting to insert an ISO 8601 string with UTC indicator (e.g. `'2026-10-27T20:12:17.148Z'`) into MySQL's `DATETIME` column caused an `ER_TRUNCATED_WRONG_VALUE` error (code 1292).
+  - **Fix**: Added a date normalization step in `courses.service.js` converting ISO date strings to `'YYYY-MM-DD HH:MM:SS'` before executing the insert.
+- **Issue**: Running test suites concurrently in a single process caused the first suite's `after()` hook (`pool.end()`) to prematurely terminate active sockets used by the second suite.
+  - **Fix**: Created `backend/tests/runner.js` to execute test suites sequentially in dedicated child processes, ensuring clean event loop termination and total isolation.
