@@ -3,6 +3,10 @@ import cors from 'cors';
 import healthRoutes from './routes/health.routes.js';
 import authRoutes from './features/auth/auth.routes.js';
 import coursesRoutes from './features/courses/courses.routes.js';
+import {
+  submissionsRouter,
+  assignmentSubmissionsRouter,
+} from './features/submissions/submissions.routes.js';
 import notFoundHandler from './middleware/notFoundHandler.js';
 import errorHandler from './middleware/errorHandler.js';
 
@@ -26,6 +30,9 @@ app.get('/', (req, res) => {
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', coursesRoutes);
+// Submissions: /api/submissions/:id  and  /api/assignments/:id/submissions
+app.use('/api/submissions', submissionsRouter);
+app.use('/api/assignments', assignmentSubmissionsRouter);
 
 // Catch 404 routes
 app.use(notFoundHandler);
