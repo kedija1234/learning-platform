@@ -62,6 +62,7 @@ describe('Phase 2: Authentication & Authorization Tests', () => {
     if (server) {
       await new Promise((resolve) => server.close(resolve));
     }
+    await pool.end();
   });
 
   // 1. Registration tests
