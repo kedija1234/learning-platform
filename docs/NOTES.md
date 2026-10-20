@@ -118,3 +118,6 @@ Platform: University Learning & Internship Platform
   - **Fix**: Positioned the role verification endpoint (`/api/auth/role-check`) directly in `auth.routes.js`, ensuring proper routing order and allowing end-to-end testing of `authenticateToken` and `requireRole`.
 - **Issue**: Expected client error test cases (e.g. 409 Conflict, 401 Unauthorized) were logging full error stacks to console output during test runs.
   - **Fix**: Updated `errorHandler.js` to distinguish between 4xx client errors (concise logging, suppressed in test mode) and 500+ server errors (full stack logging for diagnosis).
+
+### Known Limitations
+- **Open Registration for Privileged Roles**: The platform currently permits self-registration with the `mentor` and `coordinator` roles to simplify local demonstration and evaluation. In a production educational institution environment, self-registration would typically be restricted to students, while mentor and coordinator roles would require administrative invitations, academic department approval, or email domain verification workflows.

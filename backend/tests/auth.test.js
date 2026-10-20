@@ -29,6 +29,15 @@ const testMentor = {
 
 describe('Phase 2: Authentication & Authorization Tests', () => {
   before(async () => {
+    // Clean up any stale test records from prior runs
+    try {
+      await pool.query(
+        'DELETE FROM users WHERE email LIKE "student_%@example.com" OR email LIKE "mentor_%@example.com" OR email LIKE "%test%@example.com"'
+      );
+    } catch (err) {
+      console.error('Pre-test cleanup error:', err);
+    }
+
     // Start test server on random open port (port 0)
     await new Promise((resolve) => {
       server = app.listen(0, () => {
@@ -40,17 +49,16 @@ describe('Phase 2: Authentication & Authorization Tests', () => {
   });
 
   after(async () => {
-    // Clean up created test users from the database
+    // Clean up all test users created during test execution
     try {
-      await pool.query('DELETE FROM users WHERE email IN (?, ?)', [
-        testStudent.email,
-        testMentor.email,
-      ]);
+      await pool.query(
+        'DELETE FROM users WHERE email LIKE "student_%@example.com" OR email LIKE "mentor_%@example.com" OR email LIKE "%test%@example.com"'
+      );
     } catch (err) {
-      console.error('Error cleaning up test users:', err);
+      console.error('Post-test cleanup error:', err);
     }
 
-    // Close server and database pool
+    // Close server and release connection
     if (server) {
       await new Promise((resolve) => server.close(resolve));
     }
@@ -100,7 +108,7 @@ describe('Phase 2: Authentication & Authorization Tests', () => {
       assert.match(body.message, /already exists/i);
     });
 
-    it('should reject registration with password shorter than 6 characters with 400 Bad Request', async () => {
+    it('should reject registration with password shorter than 8 characters with 400 Bad Request', async () => {
       const response = await fetch(`${baseUrl}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -108,7 +116,7 @@ describe('Phase 2: Authentication & Authorization Tests', () => {
           first_name: 'Short',
           last_name: 'Pass',
           email: 'shortpass@example.com',
-          password: '123',
+          password: 'Pass123', // 7 chars, less than 8
         }),
       });
 
@@ -117,6 +125,7 @@ describe('Phase 2: Authentication & Authorization Tests', () => {
       assert.equal(body.success, false);
       assert.ok(Array.isArray(body.errors));
       assert.ok(body.errors.some((e) => e.field === 'password'));
+      assert.ok(body.errors.some((e) => /at least 8 characters/i.test(e.message)));
     });
 
     it('should reject registration with invalid email format with 400 Bad Request', async () => {
