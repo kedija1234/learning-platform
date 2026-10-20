@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import healthRoutes from './routes/health.routes.js';
+import authRoutes from './features/auth/auth.routes.js';
 import notFoundHandler from './middleware/notFoundHandler.js';
 import errorHandler from './middleware/errorHandler.js';
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 // Mount routes
 app.use('/api/health', healthRoutes);
+app.use('/api/auth', authRoutes);
 
 // Catch 404 routes
 app.use(notFoundHandler);
