@@ -42,7 +42,7 @@ async function initializeDatabase() {
     );
 
     // Switch to target database
-    await connection.changeUser({ database });
+    await connection.query(`USE \`${database}\`;`);
     console.log(`Using database '${database}'.`);
 
     // Step 2: Read and execute schema.sql
