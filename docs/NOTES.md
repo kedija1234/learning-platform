@@ -252,3 +252,77 @@ submissions.test.js 18 tests  ✔ 18 pass  ✘ 0 fail
 ─────────────────────────────────────────────────────
 TOTAL               52 tests  ✔ 52 pass  ✘ 0 fail
 ```
+
+---
+
+## Phase 5: Internships & Student Applications
+
+### What Was Built
+1. **Feature-Based Architecture (`backend/src/features/internships/`)**:
+   - `internships.validation.js`: Input schemas for creating internships (required `title`, `organization_name`, `description`, optional ISO 8601 `deadline`), updating internships, query parameters (`page`, `limit`, `search`), application status updates (`accepted` or `rejected`), and numeric ID path parameters.
+   - `internships.service.js`: Complete business logic layer:
+     - `listInternships`: Paginated internship opportunities with keyword search across `title`, `organization_name`, and `description` using `LIKE`. Includes application counts and dynamically attaches the authenticated student's current application status (`pending`, `accepted`, `rejected`, or `null`).
+     - `getInternshipById`: Detailed internship profile including coordinator contact info and student application state.
+     - `createInternship`: Restricted to `coordinator` and `admin` roles. Formats `deadline` into MySQL/TiDB-compatible `YYYY-MM-DD HH:MM:SS`.
+     - `updateInternship` & `deleteInternship`: Enforces ownership — only the posting coordinator or an administrator can update or remove the opportunity. Deletion cascades cleanly to applications.
+     - `applyToInternship`: Validates internship existence, rejects applications if the deadline has passed (400 Bad Request), prevents duplicate submissions (409 Conflict), records application with initial `pending` status, and triggers an automated notification for the posting coordinator.
+     - `getStudentApplications`: Student view of their application history with organization and role details.
+     - `getInternshipApplications`: Coordinator view of all applicants for an internship, filterable by application status (`pending`, `accepted`, `rejected`).
+     - `updateApplicationStatus`: Coordinator accepts or rejects a student's application, records the decision, and generates an automated notification for the student.
+   - `internships.controller.js`: HTTP handlers mapping request parameters to service operations with standard JSON responses.
+   - `internships.routes.js`: Express router mounting 9 endpoints protected by `authenticateToken` and `requireRole`.
+     - Mounted `/api/internships/applications/me` before `/:id` to avoid route parameter collision.
+
+2. **App Wiring (`backend/src/app.js`)**:
+   - Mounted `internshipsRoutes` at `/api/internships`.
+
+3. **Automated Test Suite (`backend/tests/internships.test.js`)**:
+   - Self-contained test suite starting its own ephemeral test server (random port 0).
+   - 24 automated test cases covering:
+     - Coordinator creating internship posting (201)
+     - Student forbidden from creating internship (403)
+     - Mentor forbidden from creating internship (403)
+     - Missing title rejected with 400 Bad Request
+     - Browsing internships with pagination metadata (200)
+     - Filtering internships by keyword search using `LIKE` (200)
+     - Retrieving single internship details by ID (200)
+     - Student applying for internship (201)
+     - Coordinator receiving notification when student applies (DB check)
+     - Duplicate application rejected with 409 Conflict
+     - Coordinator forbidden from applying as student (403)
+     - Student cannot apply if deadline has passed (400)
+     - Student viewing their submitted applications history (200)
+     - Non-owning coordinator forbidden from viewing applicants (403)
+     - Owning coordinator viewing all applicants (200)
+     - Non-owning coordinator forbidden from updating application status (403)
+     - Invalid status value rejected with 400 Bad Request
+     - Owning coordinator accepting an applicant (200)
+     - Student receiving notification when application is accepted (DB check)
+     - Owning coordinator rejecting an applicant (200)
+     - Student receiving notification when application is rejected (DB check)
+     - Non-owning coordinator forbidden from updating internship (403)
+     - Owning coordinator updating internship details (200)
+     - Non-owning coordinator forbidden from deleting internship (403)
+     - Owning coordinator deleting internship (200)
+
+### Key Technical Decisions
+- **Bi-Directional Notifications**:
+  - When a student applies, the coordinator receives a notification (`type: 'application_received'`) naming the student and the internship title.
+  - When a coordinator accepts or rejects an applicant, the student receives a notification (`type: 'application_status_updated'`) with the organization name and the decision (`accepted` or `rejected`).
+- **Deadline Enforcement**: Submissions past the deadline date are blocked at application time with a 400 Bad Request error.
+- **Route Specificity**: Mounted `/api/internships/applications/me` prior to `/api/internships/:id` to ensure Express resolves the static sub-path before interpreting `applications` as an integer ID parameter.
+- **TiDB Cloud Compatibility**:
+  - Pagination limits and offsets use safe integer arithmetic interpolated directly into the SQL query (`LIMIT ${safeLimit} OFFSET ${safeOffset}`), strictly avoiding TiDB parameter placeholder restrictions.
+  - Search operates via standard SQL `LIKE %term%` rather than unsupported `FULLTEXT` indexes.
+  - Deadlines are normalized to `YYYY-MM-DD HH:MM:SS` prior to database insertion.
+
+### Test Results Across All Suites
+```
+auth.test.js        13 tests  ✔ 13 pass  ✘ 0 fail
+courses.test.js     21 tests  ✔ 21 pass  ✘ 0 fail
+submissions.test.js 18 tests  ✔ 18 pass  ✘ 0 fail
+internships.test.js 24 tests  ✔ 24 pass  ✘ 0 fail
+─────────────────────────────────────────────────────
+TOTAL               76 tests  ✔ 76 pass  ✘ 0 fail
+```
+
