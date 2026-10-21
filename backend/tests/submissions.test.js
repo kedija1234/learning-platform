@@ -13,7 +13,9 @@
  *  - Grade outside 0-100 rejected (400)
  *  - Negative grade rejected (400)
  *  - Student forbidden from grading (403)
+ *  - Non-owning mentor forbidden from grading (403)
  *  - Owning mentor grades submission (200)
+ *  - Student receives notification after grading (DB check)
  *  - Student cannot resubmit after grading (400)
  *  - Student views submission with grade and feedback (200)
  *  - Student views full submission history (200)
@@ -24,14 +26,16 @@ process.env.NODE_ENV = 'test'; // suppress 4xx logs in errorHandler
 
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import app from '../src/app.js';
 import pool from '../src/config/db.js';
 
 // ---------- helpers ----------------------------------------------------------
 
-const BASE = 'http://localhost:5000/api';
+let server;
+let baseUrl;
 
 async function api(method, path, body, token) {
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(`${baseUrl}${path}`, {
     method,
     headers: {
       'Content-Type': 'application/json',
@@ -46,6 +50,7 @@ async function api(method, path, body, token) {
 // ---------- shared state -----------------------------------------------------
 
 let mentorToken, studentToken, student2Token, otherMentorToken;
+let studentId;
 let courseId, assignmentId, submissionId;
 
 // Unique tag makes cleanup easy without hard-coding IDs
@@ -54,7 +59,14 @@ const TAG = 'test_sub_';
 // ---------- setup / teardown -------------------------------------------------
 
 async function cleanUp() {
-  // Remove submissions first (FK: submissions -> assignments -> courses)
+  // Remove notifications for tagged users
+  await pool.query(
+    `DELETE n FROM notifications n
+       JOIN users u ON n.user_id = u.id
+      WHERE u.email LIKE ?`,
+    [`%${TAG}%`]
+  );
+  // Remove submissions (FK: submissions -> assignments -> courses)
   await pool.query(
     `DELETE s FROM submissions s
        JOIN assignments a ON s.assignment_id = a.id
@@ -66,68 +78,80 @@ async function cleanUp() {
   await pool.query('DELETE FROM users  WHERE email  LIKE ?', [`%${TAG}%`]);
 }
 
-before(async () => {
-  await cleanUp(); // remove any stale records from a previous failed run
-
-  // Register owning mentor
-  const m = await api('POST', '/auth/register', {
-    first_name: 'Sub', last_name: 'Mentor',
-    email: `${TAG}mentor@example.com`,
-    password: 'Passw0rd!', role: 'mentor',
-  });
-  mentorToken = m.body.data?.token;
-
-  // Register a second mentor who does NOT own the course
-  const om = await api('POST', '/auth/register', {
-    first_name: 'Other', last_name: 'Mentor',
-    email: `${TAG}othermentor@example.com`,
-    password: 'Passw0rd!', role: 'mentor',
-  });
-  otherMentorToken = om.body.data?.token;
-
-  // Register student 1 (will enroll)
-  const s1 = await api('POST', '/auth/register', {
-    first_name: 'Sub', last_name: 'Student1',
-    email: `${TAG}student1@example.com`,
-    password: 'Passw0rd!', role: 'student',
-  });
-  studentToken = s1.body.data?.token;
-
-  // Register student 2 (will NOT enroll - used for access-denial tests)
-  const s2 = await api('POST', '/auth/register', {
-    first_name: 'Sub', last_name: 'Student2',
-    email: `${TAG}student2@example.com`,
-    password: 'Passw0rd!', role: 'student',
-  });
-  student2Token = s2.body.data?.token;
-
-  // Owning mentor creates a course
-  const course = await api('POST', '/courses', {
-    title: `${TAG}course`, description: 'Submissions test course', category: 'Testing',
-  }, mentorToken);
-  courseId = course.body.data?.course?.id;
-
-  // Mentor adds an assignment to the course
-  const assignment = await api('POST', `/courses/${courseId}/assignments`, {
-    title: `${TAG}assignment`,
-    instructions: 'Submit your best work',
-    due_date: '2030-12-31T23:59:59Z',
-    max_grade: 100,
-  }, mentorToken);
-  assignmentId = assignment.body.data?.assignment?.id;
-
-  // Student 1 enrolls in the course
-  await api('POST', `/courses/${courseId}/enroll`, null, studentToken);
-});
-
-after(async () => {
-  await cleanUp();
-  await pool.end();
-});
-
-// ---------- tests ------------------------------------------------------------
-
 describe('Submissions - Phase 4', () => {
+
+  before(async () => {
+    await cleanUp(); // remove any stale records from a previous failed run
+
+    // Start ephemeral test server on a random open port
+    await new Promise((resolve) => {
+      server = app.listen(0, () => {
+        baseUrl = `http://localhost:${server.address().port}/api`;
+        resolve();
+      });
+    });
+
+    // Register owning mentor
+    const m = await api('POST', '/auth/register', {
+      first_name: 'Sub', last_name: 'Mentor',
+      email: `${TAG}mentor@example.com`,
+      password: 'Passw0rd!', role: 'mentor',
+    });
+    mentorToken = m.body.data?.token;
+
+    // Register a second mentor who does NOT own the course
+    const om = await api('POST', '/auth/register', {
+      first_name: 'Other', last_name: 'Mentor',
+      email: `${TAG}othermentor@example.com`,
+      password: 'Passw0rd!', role: 'mentor',
+    });
+    otherMentorToken = om.body.data?.token;
+
+    // Register student 1 (will enroll)
+    const s1 = await api('POST', '/auth/register', {
+      first_name: 'Sub', last_name: 'Student1',
+      email: `${TAG}student1@example.com`,
+      password: 'Passw0rd!', role: 'student',
+    });
+    studentToken = s1.body.data?.token;
+    studentId = s1.body.data?.user?.id;
+
+    // Register student 2 (will NOT enroll - used for access-denial tests)
+    const s2 = await api('POST', '/auth/register', {
+      first_name: 'Sub', last_name: 'Student2',
+      email: `${TAG}student2@example.com`,
+      password: 'Passw0rd!', role: 'student',
+    });
+    student2Token = s2.body.data?.token;
+
+    // Owning mentor creates a course
+    const course = await api('POST', '/courses', {
+      title: `${TAG}course`, description: 'Submissions test course', category: 'Testing',
+    }, mentorToken);
+    courseId = course.body.data?.course?.id;
+
+    // Mentor adds an assignment to the course
+    const assignment = await api('POST', `/courses/${courseId}/assignments`, {
+      title: `${TAG}assignment`,
+      instructions: 'Submit your best work',
+      due_date: '2030-12-31T23:59:59Z',
+      max_grade: 100,
+    }, mentorToken);
+    assignmentId = assignment.body.data?.assignment?.id;
+
+    // Student 1 enrolls in the course
+    await api('POST', `/courses/${courseId}/enroll`, null, studentToken);
+  });
+
+  after(async () => {
+    await cleanUp();
+    if (server) {
+      await new Promise((resolve) => server.close(resolve));
+    }
+    await pool.end();
+  });
+
+  // ---------- tests ----------------------------------------------------------
 
   it('non-enrolled student cannot submit (403)', async () => {
     const { status, body } = await api(
@@ -162,8 +186,8 @@ describe('Submissions - Phase 4', () => {
 
   it('progress_percent reaches 100 after submitting the only assignment', async () => {
     const [rows] = await pool.query(
-      'SELECT progress_percent FROM enrollments WHERE course_id = ? AND student_id = (SELECT id FROM users WHERE email = ?)',
-      [courseId, `${TAG}student1@example.com`]
+      'SELECT progress_percent FROM enrollments WHERE course_id = ? AND student_id = ?',
+      [courseId, studentId]
     );
     assert.equal(rows.length, 1, 'enrollment row must exist');
     assert.equal(rows[0].progress_percent, 100, 'progress should be 100% after submitting all assignments');
@@ -222,6 +246,14 @@ describe('Submissions - Phase 4', () => {
     assert.equal(status, 403);
   });
 
+  it('non-owning mentor cannot grade a submission in another mentors course (403)', async () => {
+    const { status } = await api(
+      'PUT', `/submissions/${submissionId}/grade`,
+      { grade: 75, feedback: 'Not my course!' }, otherMentorToken
+    );
+    assert.equal(status, 403);
+  });
+
   it('owning mentor can grade a submission (200)', async () => {
     const { status, body } = await api(
       'PUT', `/submissions/${submissionId}/grade`,
@@ -230,6 +262,16 @@ describe('Submissions - Phase 4', () => {
     assert.equal(status, 200, JSON.stringify(body));
     assert.equal(Number(body.data?.submission?.grade), 88, 'grade should be saved as 88');
     assert.ok(body.data?.submission?.feedback, 'feedback should be present');
+  });
+
+  it('student receives a notification after their submission is graded', async () => {
+    // Check the notifications table for a grading notification sent to this student
+    const [rows] = await pool.query(
+      `SELECT id, type, message FROM notifications WHERE user_id = ? AND type = 'submission_graded' ORDER BY id DESC`,
+      [studentId]
+    );
+    assert.ok(rows.length >= 1, 'at least one grading notification should exist');
+    assert.ok(rows[0].message.length > 0, 'notification message should not be empty');
   });
 
   it('student cannot resubmit after grading (400)', async () => {
