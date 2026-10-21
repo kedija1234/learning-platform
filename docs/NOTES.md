@@ -209,7 +209,8 @@ Platform: University Learning & Internship Platform
    - Both routers imported and mounted: `/api/submissions` and `/api/assignments`.
 
 3. **Automated Test Suite (`backend/tests/submissions.test.js`)**:
-   - 16 test cases covering the complete workflow in order:
+   - Runs against its own ephemeral test server (random port 0) so tests run standalone without requiring a separate server process.
+   - 18 test cases covering the complete workflow in order:
      - Non-enrolled student blocked from submitting (403)
      - Enrolled student submits work (201)
      - Resubmission before grading updates content in-place, returns same `id` (201)
@@ -221,13 +222,17 @@ Platform: University Learning & Internship Platform
      - Grade above 100 rejected (400)
      - Negative grade rejected (400)
      - Student forbidden from grading (403)
+     - Non-owning mentor forbidden from grading in another mentor's course (403)
      - Owning mentor grades submission (200)
+     - Student receives automated notification upon submission grading
      - Student cannot resubmit after grading (400)
      - Student views submission with populated grade and feedback (200)
      - Student views full submission history across courses (200)
      - Student retrieves their submission for a specific assignment (200)
 
 ### Key Technical Decisions
+- **Late Submission Handling & Due Date Policy**: The system automatically captures `submitted_at` on every submission. Assignments specify an optional `due_date`. Submissions past the due date are permitted rather than hard-blocked, providing mentors with real-world instructional flexibility to review circumstances, accept late assignments, or apply grade deductions with constructive feedback. Both `submitted_at` and `due_date` are stored and returned, allowing frontend clients to render "Late" badges when `submitted_at > due_date`.
+- **Automated Notifications on Grading**: Grading an assignment generates an immediate alert in the `notifications` table for the student (`type: 'submission_graded'`), detailing the assignment title, course title, and score received (`X/100`), with direct navigation back to the assignment.
 - **Upsert Logic for Resubmission**: Rather than blocking all resubmissions, the service allows a student to update their content right up until a mentor grades it. Once `grade IS NOT NULL` the row is locked. This is a common real-world pattern — students can fix typos or add content before feedback arrives.
 - **Two Routers, One Feature File**: Submission endpoints logically belong to two URL namespaces (`/api/submissions` and `/api/assignments`). Both routers are exported from one file and mounted separately in `app.js`, keeping the feature self-contained without duplicating middleware wiring.
 - **Progress as a Derived Calculation**: `progress_percent` is not stored as a raw counter — it is always recomputed from the actual submission rows. This prevents the counter from drifting out of sync if assignments are added or deleted later.
@@ -236,12 +241,14 @@ Platform: University Learning & Internship Platform
 ### Problems Found and How They Were Fixed
 - **Issue**: MySQL `DECIMAL` columns (used for `grade`) are returned as strings (e.g. `"88.00"`) by `mysql2`, causing `assert.equal(grade, 88)` to fail with strict equality.
   - **Fix**: Wrapped grade assertions in `Number()` — `assert.equal(Number(body.data?.submission?.grade), 88)` — so the test is robust regardless of MySQL's type coercion.
+- **Issue**: `submissions.test.js` initially relied on an externally running server at port 5000, causing standalone `npm test` runs to fail if the development server was down.
+  - **Fix**: Refactored `submissions.test.js` to bind to port 0 (`app.listen(0)`) in its `before()` hook and close it cleanly in `after()`, matching `auth.test.js` and `courses.test.js`.
 
 ### Test Results
 ```
 auth.test.js        13 tests  ✔ 13 pass  ✘ 0 fail
 courses.test.js     21 tests  ✔ 21 pass  ✘ 0 fail
-submissions.test.js 16 tests  ✔ 16 pass  ✘ 0 fail
+submissions.test.js 18 tests  ✔ 18 pass  ✘ 0 fail
 ─────────────────────────────────────────────────────
-TOTAL               50 tests  ✔ 50 pass  ✘ 0 fail
+TOTAL               52 tests  ✔ 52 pass  ✘ 0 fail
 ```
