@@ -384,4 +384,55 @@ notifications.test.js 15 tests  ✔ 15 pass  ✘ 0 fail
 TOTAL                 93 tests  ✔ 93 pass  ✘ 0 fail
 ```
 
+---
+
+## Phase 7: React Frontend Core (Vite, React Router & Axios)
+
+### Step 1: Project Setup, Auth Flow, Protected Routes & Navigation Layout
+
+#### What Was Built
+1. **Frontend Architecture (`frontend/`)**:
+   - Initialized React 18 single page application bundled with Vite (`vite@5.4.11`, `@vitejs/plugin-react`).
+   - Routing powered by React Router v6 (`react-router-dom@^6.28.0`).
+   - HTTP communication via Axios (`axios@^1.7.9`).
+   - Configured `frontend/vercel.json` with wildcard SPA routing rewrites (`/(.*)` -> `/index.html`).
+   - Environment configuration template (`frontend/.env.example`) and local configuration (`frontend/.env`) consuming `VITE_API_BASE_URL`.
+
+2. **Centralized API Client (`frontend/src/api/client.js`)**:
+   - Configured Axios instance dynamically binding to `import.meta.env.VITE_API_BASE_URL` with fallback to `http://localhost:5000/api`.
+   - **Request Interceptor**: Automatically attaches `Authorization: Bearer <token>` from `localStorage` on all outgoing requests.
+   - **Response Interceptor**: Intercepts 401 Unauthorized responses, clears stale `localStorage` session data, and normalizes error messages into `error.friendlyMessage` for consistent UI presentation.
+
+3. **Authentication Context (`frontend/src/context/AuthContext.jsx`)**:
+   - Provides global auth state (`user`, `token`, `loading`, `isAuthenticated`, `login`, `register`, `logout`).
+   - Persists JWT tokens and user profiles in `localStorage`.
+   - On initial app boot, verifies token validity by pinging `GET /api/auth/me`. If invalid or expired, automatically purges credentials.
+
+4. **Role-Based Protected Route Guard (`frontend/src/components/ProtectedRoute.jsx`)**:
+   - Displays a clean loading spinner while validating authentication status.
+   - Redirects unauthenticated visitors to `/login`, preserving the intended target path in location state.
+   - Restricts view access by role (`allowedRoles`) and renders a clean `403 Access Denied` card if unauthorized.
+
+5. **Shared App Layout & Navbar (`frontend/src/components/Navbar.jsx` & `Layout.jsx`)**:
+   - Persistent, responsive top navigation bar with mobile hamburger drawer.
+   - Role-specific link generation (Student: Courses, Internships, Applications, Grades; Mentor: Courses, Create Course; Coordinator: Internships, Post Internship).
+   - Real-time unread notifications bell with dynamic red count badge (polling `/notifications/unread-count`).
+   - User profile badge with role badge and logout button.
+
+6. **Authentication Pages (`frontend/src/pages/Login.jsx` & `Register.jsx`)**:
+   - `Login`: Clean credentials form with friendly error alerts and **Quick Fill Demo Account** buttons (`Student`, `Mentor`, `Coordinator`, `Admin`) for rapid local evaluation.
+   - `Register`: Full account creation form with first name, last name, email, min 8-character password, and role selector (`student`, `mentor`, `coordinator`).
+   - `Dashboard`: Personalized landing hero with role-tailored action cards.
+   - `NotFound`: 404 page for unmatched routes.
+
+7. **Production Styling (`frontend/src/index.css`)**:
+   - Clean, modern, responsive CSS design with CSS variables, accessible color contrasts, role tags, cards, forms, and loading states.
+   - Verified production build compiles cleanly (`dist/assets` generated in ~1s).
+
+#### Key Technical Decisions
+- **BOM Stripping**: Ensured all frontend source files and `package.json` are saved in UTF-8 without Byte Order Mark (BOM) to prevent Node/Vite JSON parsing errors.
+- **Zero Secrets in Frontend**: API base URLs use Vite's client-exposed `VITE_` prefix convention (`VITE_API_BASE_URL`). No secrets, private keys, or passwords are baked into frontend bundles.
+- **Immediate Feedback with Quick Fill**: Added local demo account shortcut buttons on the login screen to allow quick testing without manually retyping seed passwords.
+
+
 
