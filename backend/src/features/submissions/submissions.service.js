@@ -348,7 +348,9 @@ export async function gradeSubmission(submissionId, userId, userRole, { grade, f
        s.assignment_id, 
        s.student_id, 
        a.course_id, 
-       c.mentor_id
+       a.title AS assignment_title,
+       c.mentor_id,
+       c.title AS course_title
      FROM submissions s
      JOIN assignments a ON s.assignment_id = a.id
      JOIN courses c ON a.course_id = c.id
@@ -382,6 +384,18 @@ export async function gradeSubmission(submissionId, userId, userRole, { grade, f
   const progressPercent = await updateCourseProgress(
     submission.course_id,
     submission.student_id
+  );
+
+  // 5. Send notification to student
+  const notificationMessage = `Your submission for "${submission.assignment_title}" in "${submission.course_title}" has been graded: ${numericGrade}/100.`;
+  await pool.query(
+    `INSERT INTO notifications (user_id, type, message, link_path)
+     VALUES (?, 'submission_graded', ?, ?)`,
+    [
+      submission.student_id,
+      notificationMessage,
+      `/courses/${submission.course_id}/assignments/${submission.assignment_id}`,
+    ]
   );
 
   return getSubmissionById(submissionId, userId, userRole);
