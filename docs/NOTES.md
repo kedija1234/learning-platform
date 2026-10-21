@@ -320,9 +320,68 @@ TOTAL               52 tests  ✔ 52 pass  ✘ 0 fail
 ```
 auth.test.js        13 tests  ✔ 13 pass  ✘ 0 fail
 courses.test.js     21 tests  ✔ 21 pass  ✘ 0 fail
-submissions.test.js 18 tests  ✔ 18 pass  ✘ 0 fail
+submissions.test.js 20 tests  ✔ 20 pass  ✘ 0 fail
 internships.test.js 24 tests  ✔ 24 pass  ✘ 0 fail
 ─────────────────────────────────────────────────────
-TOTAL               76 tests  ✔ 76 pass  ✘ 0 fail
+TOTAL               78 tests  ✔ 78 pass  ✘ 0 fail
 ```
+
+---
+
+## Phase 6: Notifications API & Real-Time Alerts
+
+### What Was Built
+1. **Feature-Based Architecture (`backend/src/features/notifications/`)**:
+   - `notifications.validation.js`: Input schemas for listing notifications with pagination (`page`, `limit`), unread filtering (`unreadOnly`), and numeric ID path parameters.
+   - `notifications.service.js`: Complete business logic layer:
+     - `listNotifications`: Retrieves paginated notifications strictly scoped to the authenticated user (`WHERE user_id = ?`). Optionally filters only unread alerts with `unreadOnly=true`. TiDB safe integer interpolation applied for `LIMIT`/`OFFSET`.
+     - `getUnreadCount`: Computes real-time unread alert badge count (`WHERE user_id = ? AND is_read = FALSE`).
+     - `markAsRead`: Enforces strict data ownership — validates that the notification exists (404) and belongs to the requesting user before updating `is_read = TRUE`. Attempts to alter other users' notifications are blocked with `403 Forbidden`.
+     - `markAllAsRead`: Bulk updates all unread notifications to read state for the current authenticated user.
+   - `notifications.controller.js`: Clean HTTP handlers mapping request parameters to service calls with standard JSON responses.
+   - `notifications.routes.js`: Express router mounting endpoints protected with `authenticateToken`.
+     - Static endpoints (`/api/notifications/unread-count` and `/api/notifications/read-all`) are explicitly registered *before* `/:id/read` to prevent route shadowing. Supports both `PUT` and `PATCH` for idiomatic REST consumers.
+
+2. **Cross-Feature Broadcast Notification**:
+   - Enhanced `createInternship` in `internships.service.js`: When a coordinator or administrator publishes a new internship opportunity, the system automatically queries all active students (`role = 'student' AND is_active = TRUE`) and broadcasts an automated notification alert (`type: 'new_internship_posted'`) linking directly to the new opportunity.
+
+3. **Course Grading Access Control Reinforcement**:
+   - Confirmed and verified via automated tests that only the mentor who owns the course (or an admin) can grade coursework.
+   - Verified that a `coordinator` attempting to grade submissions is strictly blocked with `403 Forbidden`.
+   - Verified that an `admin` can grade submissions across courses.
+
+4. **Automated Test Suite (`backend/tests/notifications.test.js`)**:
+   - 15 comprehensive automated test cases:
+     - Unauthenticated requests rejected with 401 Unauthorized
+     - Newly registered user starts with 0 unread notifications (200)
+     - Coordinator creating an internship triggers broadcast notifications to active students
+     - Student unread count increments after receiving notifications (200)
+     - Paginated listing with total, page, limit, and totalPages metadata (200)
+     - Filtering unread notifications using `unreadOnly=true` (200)
+     - Invalid pagination parameters rejected with 400 Bad Request
+     - Strict isolation: users only see their own notifications in listing
+     - Strict isolation: users cannot mark another user's notification as read (403 Forbidden)
+     - Marking non-existent notification returns 404 Not Found
+     - Marking with invalid ID returns 400 Bad Request
+     - Marking single notification as read updates database state (200)
+     - Marking already read notification operates idempotently (200)
+     - Marking all notifications as read updates all unread records (200)
+     - Unread count drops to 0 after mark-all-as-read (200)
+
+### Key Technical Decisions
+- **Strict Row-Level Ownership**: Notification endpoints never accept arbitrary `userId` parameters from request bodies or URL paths. All queries and updates derive `userId` solely from the verified JWT payload (`req.user.id`). Attempting to manipulate a notification belonging to another user returns an explicit `403 Forbidden`.
+- **Broadcast Efficiency**: When broadcasting new internship postings to all active students, notifications are constructed and inserted in a single batched multi-row SQL statement (`INSERT INTO notifications ... VALUES (...)`), avoiding N+1 round-trips to the database.
+- **Route Specificity**: Express matches routes in registration sequence. Placing `/unread-count` and `/read-all` prior to `/:id/read` prevents Express from parsing literal paths as ID parameters.
+
+### Test Results Across All Suites
+```
+auth.test.js          13 tests  ✔ 13 pass  ✘ 0 fail
+courses.test.js       21 tests  ✔ 21 pass  ✘ 0 fail
+submissions.test.js   20 tests  ✔ 20 pass  ✘ 0 fail
+internships.test.js   24 tests  ✔ 24 pass  ✘ 0 fail
+notifications.test.js 15 tests  ✔ 15 pass  ✘ 0 fail
+───────────────────────────────────────────────────────
+TOTAL                 93 tests  ✔ 93 pass  ✘ 0 fail
+```
+
 
