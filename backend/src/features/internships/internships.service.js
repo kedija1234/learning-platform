@@ -1,4 +1,4 @@
-﻿import pool from '../../config/db.js';
+import pool from '../../config/db.js';
 
 /**
  * Normalizes ISO date string or Date object to MySQL DATETIME format (YYYY-MM-DD HH:MM:SS)
@@ -173,7 +173,27 @@ export async function createInternship(coordinatorId, { title, organization_name
     [coordinatorId, title.trim(), organization_name.trim(), description.trim(), formattedDeadline]
   );
 
-  return getInternshipById(result.insertId);
+  const internshipId = result.insertId;
+
+  // Broadcast notification to all active students
+  const [students] = await pool.query(
+    "SELECT id FROM users WHERE role = 'student' AND is_active = TRUE"
+  );
+
+  if (students.length > 0) {
+    const notificationMessage = `New internship opportunity: "${title.trim()}" at "${organization_name.trim()}".`;
+    const placeholders = students.map(() => '(?, ?, ?, ?)').join(', ');
+    const params = [];
+    for (const s of students) {
+      params.push(s.id, 'new_internship_posted', notificationMessage, `/internships/${internshipId}`);
+    }
+    await pool.query(
+      `INSERT INTO notifications (user_id, type, message, link_path) VALUES ${placeholders}`,
+      params
+    );
+  }
+
+  return getInternshipById(internshipId);
 }
 
 /**
