@@ -7,6 +7,7 @@ import {
   submissionsRouter,
   assignmentSubmissionsRouter,
 } from './features/submissions/submissions.routes.js';
+import internshipsRoutes from './features/internships/internships.routes.js';
 import notFoundHandler from './middleware/notFoundHandler.js';
 import errorHandler from './middleware/errorHandler.js';
 
@@ -33,6 +34,7 @@ app.use('/api/courses', coursesRoutes);
 // Submissions: /api/submissions/:id  and  /api/assignments/:id/submissions
 app.use('/api/submissions', submissionsRouter);
 app.use('/api/assignments', assignmentSubmissionsRouter);
+app.use('/api/internships', internshipsRoutes);
 
 // Catch 404 routes
 app.use(notFoundHandler);
