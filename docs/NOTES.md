@@ -184,3 +184,64 @@ Platform: University Learning & Internship Platform
   - **Fix**: Added a date normalization step in `courses.service.js` converting ISO date strings to `'YYYY-MM-DD HH:MM:SS'` before executing the insert.
 - **Issue**: Running test suites concurrently in a single process caused the first suite's `after()` hook (`pool.end()`) to prematurely terminate active sockets used by the second suite.
   - **Fix**: Created `backend/tests/runner.js` to execute test suites sequentially in dedicated child processes, ensuring clean event loop termination and total isolation.
+
+---
+
+## Phase 4: Submissions, Grading & Progress Tracking
+
+### What Was Built
+1. **Feature-Based Architecture (`backend/src/features/submissions/`)**:
+   - `submissions.validation.js`: Input schemas for submitting work (`content` required), grading (`grade` 0–100 float, optional `feedback`), paginated query params (`page`, `limit`, `courseId`), and numeric ID path params.
+   - `submissions.service.js`: Complete business logic layer:
+     - `submitAssignment`: Checks assignment exists → checks student is enrolled → guards against resubmission after grading → upserts the submission row (insert on first submit, update on resubmit before grading) → calls `updateCourseProgress`.
+     - `updateCourseProgress`: Counts submitted distinct assignments vs total assignments in the course and writes the resulting percentage (0–100) back to `enrollments.progress_percent`.
+     - `getSubmissionById`: Role-aware access control — students see only their own; mentors see only submissions in courses they own; admins see all.
+     - `getStudentSubmissionForAssignment`: Returns a single student's submission for one assignment (or `null` if not yet submitted).
+     - `getAssignmentSubmissions`: Mentor/admin paginated view of all submissions for an assignment, with student profile data joined in.
+     - `getStudentSubmissions`: Student's own submission history across all courses (or filtered by `courseId`), paginated.
+     - `gradeSubmission`: Mentor/admin only; verifies course ownership; updates `grade` and `feedback`; recalculates course progress.
+   - `submissions.controller.js`: Thin HTTP layer mapping `req.params`/`req.body`/`req.user` to service calls with standardised JSON responses.
+   - `submissions.routes.js`: Exports **two routers**:
+     - `submissionsRouter` — mounted at `/api/submissions` (`GET /me`, `GET /:id`, `PUT /:id/grade`)
+     - `assignmentSubmissionsRouter` — mounted at `/api/assignments` (`POST /:assignmentId/submissions`, `GET /:assignmentId/submissions/me`, `GET /:assignmentId/submissions`)
+
+2. **App Wiring (`backend/src/app.js`)**:
+   - Both routers imported and mounted: `/api/submissions` and `/api/assignments`.
+
+3. **Automated Test Suite (`backend/tests/submissions.test.js`)**:
+   - 16 test cases covering the complete workflow in order:
+     - Non-enrolled student blocked from submitting (403)
+     - Enrolled student submits work (201)
+     - Resubmission before grading updates content in-place, returns same `id` (201)
+     - `progress_percent` reaches 100% after submitting the only assignment
+     - Student views own submission (200)
+     - Another student blocked from viewing (403)
+     - Non-owning mentor blocked from listing submissions (403)
+     - Owning mentor lists all submissions with pagination (200)
+     - Grade above 100 rejected (400)
+     - Negative grade rejected (400)
+     - Student forbidden from grading (403)
+     - Owning mentor grades submission (200)
+     - Student cannot resubmit after grading (400)
+     - Student views submission with populated grade and feedback (200)
+     - Student views full submission history across courses (200)
+     - Student retrieves their submission for a specific assignment (200)
+
+### Key Technical Decisions
+- **Upsert Logic for Resubmission**: Rather than blocking all resubmissions, the service allows a student to update their content right up until a mentor grades it. Once `grade IS NOT NULL` the row is locked. This is a common real-world pattern — students can fix typos or add content before feedback arrives.
+- **Two Routers, One Feature File**: Submission endpoints logically belong to two URL namespaces (`/api/submissions` and `/api/assignments`). Both routers are exported from one file and mounted separately in `app.js`, keeping the feature self-contained without duplicating middleware wiring.
+- **Progress as a Derived Calculation**: `progress_percent` is not stored as a raw counter — it is always recomputed from the actual submission rows. This prevents the counter from drifting out of sync if assignments are added or deleted later.
+- **Role-Layered Access Control in the Service**: Access control is enforced inside the service (not just on the route), which means the rules are unit-testable and cannot be bypassed by mounting the same controller under a different route.
+
+### Problems Found and How They Were Fixed
+- **Issue**: MySQL `DECIMAL` columns (used for `grade`) are returned as strings (e.g. `"88.00"`) by `mysql2`, causing `assert.equal(grade, 88)` to fail with strict equality.
+  - **Fix**: Wrapped grade assertions in `Number()` — `assert.equal(Number(body.data?.submission?.grade), 88)` — so the test is robust regardless of MySQL's type coercion.
+
+### Test Results
+```
+auth.test.js        13 tests  ✔ 13 pass  ✘ 0 fail
+courses.test.js     21 tests  ✔ 21 pass  ✘ 0 fail
+submissions.test.js 16 tests  ✔ 16 pass  ✘ 0 fail
+─────────────────────────────────────────────────────
+TOTAL               50 tests  ✔ 50 pass  ✘ 0 fail
+```
