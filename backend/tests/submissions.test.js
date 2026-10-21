@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Phase 4 - Submissions Test Suite
  *
  * Covers:
@@ -49,7 +49,7 @@ async function api(method, path, body, token) {
 
 // ---------- shared state -----------------------------------------------------
 
-let mentorToken, studentToken, student2Token, otherMentorToken;
+let mentorToken, studentToken, student2Token, otherMentorToken, coordinatorToken, adminToken;
 let studentId;
 let courseId, assignmentId, submissionId;
 
@@ -123,6 +123,27 @@ describe('Submissions - Phase 4', () => {
       password: 'Passw0rd!', role: 'student',
     });
     student2Token = s2.body.data?.token;
+
+    // Register a coordinator (used for role-denial tests on grading)
+    const c = await api('POST', '/auth/register', {
+      first_name: 'Sub', last_name: 'Coordinator',
+      email: `${TAG}coordinator@example.com`,
+      password: 'Passw0rd!', role: 'coordinator',
+    });
+    coordinatorToken = c.body.data?.token;
+
+    // Register an admin user (register then promote in DB)
+    const a = await api('POST', '/auth/register', {
+      first_name: 'Sub', last_name: 'Admin',
+      email: `${TAG}admin@example.com`,
+      password: 'Passw0rd!', role: 'mentor',
+    });
+    await pool.query('UPDATE users SET role = "admin" WHERE id = ?', [a.body.data?.user?.id]);
+    const aLogin = await api('POST', '/auth/login', {
+      email: `${TAG}admin@example.com`,
+      password: 'Passw0rd!',
+    });
+    adminToken = aLogin.body.data?.token;
 
     // Owning mentor creates a course
     const course = await api('POST', '/courses', {
@@ -254,6 +275,14 @@ describe('Submissions - Phase 4', () => {
     assert.equal(status, 403);
   });
 
+  it('coordinator is forbidden from grading a submission (403)', async () => {
+    const { status } = await api(
+      'PUT', `/submissions/${submissionId}/grade`,
+      { grade: 80, feedback: 'Coordinator trying to grade!' }, coordinatorToken
+    );
+    assert.equal(status, 403);
+  });
+
   it('owning mentor can grade a submission (200)', async () => {
     const { status, body } = await api(
       'PUT', `/submissions/${submissionId}/grade`,
@@ -262,6 +291,15 @@ describe('Submissions - Phase 4', () => {
     assert.equal(status, 200, JSON.stringify(body));
     assert.equal(Number(body.data?.submission?.grade), 88, 'grade should be saved as 88');
     assert.ok(body.data?.submission?.feedback, 'feedback should be present');
+  });
+
+  it('admin can also grade a submission (200)', async () => {
+    const { status, body } = await api(
+      'PUT', `/submissions/${submissionId}/grade`,
+      { grade: 95, feedback: 'Admin grade review.' }, adminToken
+    );
+    assert.equal(status, 200, JSON.stringify(body));
+    assert.equal(Number(body.data?.submission?.grade), 95);
   });
 
   it('student receives a notification after their submission is graded', async () => {
@@ -285,7 +323,7 @@ describe('Submissions - Phase 4', () => {
   it('student views submission with grade and feedback populated (200)', async () => {
     const { status, body } = await api('GET', `/submissions/${submissionId}`, null, studentToken);
     assert.equal(status, 200, JSON.stringify(body));
-    assert.equal(Number(body.data?.submission?.grade), 88);
+    assert.equal(Number(body.data?.submission?.grade), 95);
     assert.ok(body.data?.submission?.feedback, 'feedback should be present');
   });
 
