@@ -432,7 +432,11 @@ TOTAL                 93 tests  ✔ 93 pass  ✘ 0 fail
 #### Key Technical Decisions
 - **BOM Stripping**: Ensured all frontend source files and `package.json` are saved in UTF-8 without Byte Order Mark (BOM) to prevent Node/Vite JSON parsing errors.
 - **Zero Secrets in Frontend**: API base URLs use Vite's client-exposed `VITE_` prefix convention (`VITE_API_BASE_URL`). No secrets, private keys, or passwords are baked into frontend bundles.
-- **Immediate Feedback with Quick Fill**: Added local demo account shortcut buttons on the login screen to allow quick testing without manually retyping seed passwords.
+- **Development-Only Demo Buttons**: Quick Fill demo buttons in `Login.jsx` are conditionally gated behind `{import.meta.env.DEV && (...)}`, ensuring test credentials never appear in production client bundles.
+
+#### Known Limitations & Production Notes
+- **JWT Storage in localStorage**: The authentication token is currently persisted in browser `localStorage` for simplicity in client-side state handling. While standard for many SPAs, `localStorage` is vulnerable to token extraction if the application ever suffers an XSS (Cross-Site Scripting) vulnerability. The recommended enterprise production architecture is storing JWTs in `httpOnly`, `Secure`, `SameSite=Strict` HTTP cookies set directly by the server, preventing all client-side JavaScript access.
+- **API Base URL Pathing**: In production deployment (e.g., Vercel, Railway), the `VITE_API_BASE_URL` environment variable **must include the `/api` prefix** (e.g., `https://backend-api.example.com/api`). Omitting `/api` will result in 404 responses because all Express backend routes are mounted under the `/api` namespace.
 
 
 
