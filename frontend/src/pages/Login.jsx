@@ -80,39 +80,41 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="demo-accounts-box">
-          <p className="demo-title">⚡ Quick Fill Demo Accounts (Local Dev):</p>
-          <div className="demo-buttons">
-            <button
-              type="button"
-              className="btn btn-sm btn-outline"
-              onClick={() => handleDemoFill('student@platform.edu', 'Password123!')}
-            >
-              Student
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline"
-              onClick={() => handleDemoFill('mentor@platform.edu', 'Password123!')}
-            >
-              Mentor
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline"
-              onClick={() => handleDemoFill('coordinator@platform.edu', 'Password123!')}
-            >
-              Coordinator
-            </button>
-            <button
-              type="button"
-              className="btn btn-sm btn-outline"
-              onClick={() => handleDemoFill('admin@platform.edu', 'Password123!')}
-            >
-              Admin
-            </button>
+        {import.meta.env.DEV && (
+          <div className="demo-accounts-box">
+            <p className="demo-title">⚡ Quick Fill Demo Accounts (Local Dev):</p>
+            <div className="demo-buttons">
+              <button
+                type="button"
+                className="btn btn-sm btn-outline"
+                onClick={() => handleDemoFill('student@platform.edu', 'Password123!')}
+              >
+                Student
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline"
+                onClick={() => handleDemoFill('mentor@platform.edu', 'Password123!')}
+              >
+                Mentor
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline"
+                onClick={() => handleDemoFill('coordinator@platform.edu', 'Password123!')}
+              >
+                Coordinator
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline"
+                onClick={() => handleDemoFill('admin@platform.edu', 'Password123!')}
+              >
+                Admin
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="auth-footer">
           <p>
