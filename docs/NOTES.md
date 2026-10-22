@@ -438,5 +438,54 @@ TOTAL                 93 tests  ✔ 93 pass  ✘ 0 fail
 - **JWT Storage in localStorage**: The authentication token is currently persisted in browser `localStorage` for simplicity in client-side state handling. While standard for many SPAs, `localStorage` is vulnerable to token extraction if the application ever suffers an XSS (Cross-Site Scripting) vulnerability. The recommended enterprise production architecture is storing JWTs in `httpOnly`, `Secure`, `SameSite=Strict` HTTP cookies set directly by the server, preventing all client-side JavaScript access.
 - **API Base URL Pathing**: In production deployment (e.g., Vercel, Railway), the `VITE_API_BASE_URL` environment variable **must include the `/api` prefix** (e.g., `https://backend-api.example.com/api`). Omitting `/api` will result in 404 responses because all Express backend routes are mounted under the `/api` namespace.
 
+---
+
+### Step 2: Student Screens & Full Learning/Internship Lifecycle
+
+#### What Was Built
+1. **Course Catalog & Keyword Search (`frontend/src/pages/CoursesList.jsx`)**:
+   - Queries `GET /api/courses` with search filters and pagination.
+   - Search bar with instant reset and keyword query binding.
+   - Course cards displaying category, instructor, enrolled student counts, and description snippets.
+   - Comprehensive loading skeleton, error states with manual retry, and empty state cards.
+
+2. **Course Details & Real-Time Enrollment (`frontend/src/pages/CourseDetail.jsx`)**:
+   - Comprehensive course curriculum view querying `GET /api/courses/:id`.
+   - **Student Enrollment Section**: Displays real-time progress bar (0-100%) if enrolled, or a one-click "Enroll in Course" button (`POST /api/courses/:id/enroll`) that updates UI state immediately without page reload.
+   - **Learning Resources Column**: Lists external links and instructional materials with clickable direct navigation.
+   - **Assignments Column**: Displays assignment instructions, due date warnings, and submission trigger buttons.
+
+3. **Assignment Submission & Grading Modal (`frontend/src/components/SubmissionModal.jsx`)**:
+   - Fetches current student submission via `GET /api/assignments/:id/submissions/me`.
+   - **Pre-Grading State**: Allows student to write, submit (`POST /api/assignments/:id/submissions`), or update their coursework prior to grading.
+   - **Post-Grading State**: Automatically locks submission against further edits, displaying the mentor's awarded score (`X / 100`), instructor feedback quote, and submitted solution preview.
+
+4. **Grades & Progress Center (`frontend/src/pages/MySubmissions.jsx`)**:
+   - Queries `GET /api/submissions/me` displaying a complete history of coursework.
+   - Displays course title, assignment name, submission timestamp, awarded score badge, and instructor feedback block.
+
+5. **Internship Catalog & Search (`frontend/src/pages/InternshipsList.jsx`)**:
+   - Queries `GET /api/internships` with search across job title, organization name, and description.
+   - Status indicators: Active vs "Deadline Passed" tag, applicant count, and real-time student application badge (`Pending`, `Accepted`, `Rejected`).
+   - One-click "Apply Now" button with immediate feedback.
+
+6. **Internship Details & Status Callout (`frontend/src/pages/InternshipDetail.jsx`)**:
+   - Full role description, organization information, coordinator contact, and deadline.
+   - Application status banner explaining the review state and congratulations card on acceptance.
+
+7. **My Applications Portal (`frontend/src/pages/MyApplications.jsx`)**:
+   - Queries `GET /api/internships/applications/me`.
+   - Lists submitted applications with company name, coordinator contact, submission date, and colored decision pills (`Pending Review`, `Accepted`, `Rejected`).
+
+8. **Notification Center (`frontend/src/pages/Notifications.jsx`)**:
+   - Queries `GET /api/notifications` with unread count badge.
+   - Filter toggle between "All" and "Unread Only".
+   - "Mark All as Read" bulk update (`PUT /api/notifications/read-all`).
+   - Interactive notification items: clicking marks individual notification as read (`PUT /api/notifications/:id/read`) and routes directly to the relevant course or internship.
+
+9. **Shared Pagination Bar (`frontend/src/components/Pagination.jsx`)**:
+   - Reusable pagination controller showing current page, total pages, record count, and previous/next navigation buttons.
+
+
 
 
