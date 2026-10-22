@@ -486,6 +486,42 @@ TOTAL                 93 tests  ✔ 93 pass  ✘ 0 fail
 9. **Shared Pagination Bar (`frontend/src/components/Pagination.jsx`)**:
    - Reusable pagination controller showing current page, total pages, record count, and previous/next navigation buttons.
 
+---
+
+### Step 3: Mentor Screens (Course Creation, Curriculum Management & Submissions Grading)
+
+#### What Was Built
+1. **Course Creation (`frontend/src/pages/CourseCreate.jsx`)**:
+   - Interactive course creation portal for mentors and admins at `/courses/new`.
+   - Fields: Course Title, Department/Category dropdown (`Computer Science`, `Software Engineering`, `Data Science & AI`, etc.), and detailed Curriculum Description.
+   - Posts to `POST /api/courses` with automatic navigation to the newly created course view upon creation.
+
+2. **Learning Resource Attachment (`frontend/src/components/ResourceModal.jsx`)**:
+   - Modal interface allowing course instructors to publish reference materials, textbook links, and slide decks (`POST /api/courses/:id/resources`).
+   - Automatically detects web URLs (`http://` / `https://`) so students can click to navigate directly to external documentation or slides.
+
+3. **Assignment Creation (`frontend/src/components/AssignmentModal.jsx`)**:
+   - Modal interface for instructors to define coursework with title, detailed assignment instructions/rubrics, and optional deadlines (`POST /api/courses/:id/assignments`).
+   - Formats deadlines cleanly for student view with countdown notices.
+
+4. **Submission Review & Grading Modal (`frontend/src/components/GradeSubmissionsModal.jsx`)**:
+   - Paginated review drawer querying `GET /api/assignments/:id/submissions`.
+   - Displays student name, email, submission timestamp, and full submitted coursework content.
+   - Inline grading form allowing instructors to assign a grade (0–100) and personalized feedback (`PUT /api/submissions/:id/grade`).
+   - Triggers automated student notifications upon grade saving.
+
+5. **Integrated Instructor Controls (`frontend/src/pages/CourseDetail.jsx`)**:
+   - Real-time role check detecting whether the viewer is the owning mentor or platform administrator (`(user.role === 'mentor' && user.id === course.mentor_id) || user.role === 'admin'`).
+   - Dedicated "Instructor Controls" card in the header with quick action buttons.
+   - Resource and assignment deletion with safety confirmation alerts (`DELETE /api/courses/:id/resources/:id`, `DELETE /api/courses/:id/assignments/:id`).
+   - Course deletion action (`DELETE /api/courses/:id`) with cascade confirmation and navigation back to `/courses`.
+   - "Review & Grade Submissions" button directly on each assignment card.
+
+6. **Catalog Action Integration (`frontend/src/pages/CoursesList.jsx`) & Routing (`frontend/src/App.jsx`)**:
+   - "+ Create New Course" button displayed in the course catalog header for mentors and administrators.
+   - Protected route at `/courses/new` guarded by `ProtectedRoute allowedRoles={['mentor', 'admin']}`.
+
+
 
 
 
