@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import Pagination from '../components/Pagination';
 
 export default function CoursesList() {
+  const { user } = useAuth();
   const [courses, setCourses] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [page, setPage] = useState(1);
@@ -53,6 +55,11 @@ export default function CoursesList() {
           <h1>Course Catalog</h1>
           <p className="page-subtitle">Discover university courses, explore curriculums, and enroll</p>
         </div>
+        {(user?.role === 'mentor' || user?.role === 'admin') && (
+          <Link to="/courses/new" className="btn btn-primary">
+            + Create New Course
+          </Link>
+        )}
       </div>
 
       {/* Search Bar */}

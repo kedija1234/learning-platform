@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import CoursesList from './pages/CoursesList';
 import CourseDetail from './pages/CourseDetail';
+import CourseCreate from './pages/CourseCreate';
 import InternshipsList from './pages/InternshipsList';
 import InternshipDetail from './pages/InternshipDetail';
 import MyApplications from './pages/MyApplications';
@@ -41,7 +42,7 @@ export default function App() {
               path="/courses/new"
               element={
                 <ProtectedRoute allowedRoles={['mentor', 'admin']}>
-                  <div className="content-box"><h2>Create Course</h2><p>Mentor course creation will load here in Step 3.</p></div>
+                  <CourseCreate />
                 </ProtectedRoute>
               }
             />
