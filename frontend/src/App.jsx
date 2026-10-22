@@ -6,6 +6,13 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import CoursesList from './pages/CoursesList';
+import CourseDetail from './pages/CourseDetail';
+import InternshipsList from './pages/InternshipsList';
+import InternshipDetail from './pages/InternshipDetail';
+import MyApplications from './pages/MyApplications';
+import MySubmissions from './pages/MySubmissions';
+import Notifications from './pages/Notifications';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -27,8 +34,9 @@ export default function App() {
           >
             <Route path="/" element={<Dashboard />} />
 
-            {/* Placeholders for upcoming steps (to be expanded in Steps 2-4) */}
-            <Route path="/courses" element={<div className="content-box"><h2>Courses</h2><p>Course screen will load here in Step 2.</p></div>} />
+            {/* Courses Screens */}
+            <Route path="/courses" element={<CoursesList />} />
+            <Route path="/courses/:id" element={<CourseDetail />} />
             <Route
               path="/courses/new"
               element={
@@ -37,9 +45,10 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/courses/:id" element={<div className="content-box"><h2>Course Details</h2></div>} />
 
-            <Route path="/internships" element={<div className="content-box"><h2>Internships</h2><p>Internships list will load here in Step 2.</p></div>} />
+            {/* Internships Screens */}
+            <Route path="/internships" element={<InternshipsList />} />
+            <Route path="/internships/:id" element={<InternshipDetail />} />
             <Route
               path="/internships/new"
               element={
@@ -48,13 +57,13 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/internships/:id" element={<div className="content-box"><h2>Internship Details</h2></div>} />
 
+            {/* Student Specific Portals */}
             <Route
               path="/applications"
               element={
                 <ProtectedRoute allowedRoles={['student']}>
-                  <div className="content-box"><h2>My Applications</h2></div>
+                  <MyApplications />
                 </ProtectedRoute>
               }
             />
@@ -63,12 +72,13 @@ export default function App() {
               path="/submissions"
               element={
                 <ProtectedRoute allowedRoles={['student']}>
-                  <div className="content-box"><h2>My Grades & Submissions</h2></div>
+                  <MySubmissions />
                 </ProtectedRoute>
               }
             />
 
-            <Route path="/notifications" element={<div className="content-box"><h2>Notifications</h2><p>Notifications list will load here in Step 2.</p></div>} />
+            {/* Notifications Screen */}
+            <Route path="/notifications" element={<Notifications />} />
           </Route>
 
           {/* Fallback 404 Route */}
