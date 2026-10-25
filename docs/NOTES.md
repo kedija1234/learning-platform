@@ -521,6 +521,36 @@ TOTAL                 93 tests  ✔ 93 pass  ✘ 0 fail
    - "+ Create New Course" button displayed in the course catalog header for mentors and administrators.
    - Protected route at `/courses/new` guarded by `ProtectedRoute allowedRoles={['mentor', 'admin']}`.
 
+---
+
+### Step 4: Coordinator Screens (Post Internships, Review Applications & Decisions)
+
+#### What Was Built
+1. **Internship Posting (`frontend/src/pages/InternshipCreate.jsx`)**:
+   - Interactive opportunity creation interface at `/internships/new` restricted to coordinators and administrators.
+   - Form fields: Position Title (min 3 chars), Organization/Company Name (min 2 chars), Application Deadline (optional datetime-local), and Detailed Role Description/Requirements (min 10 chars).
+   - Posts to `POST /api/internships`, automatically broadcasting real-time notification alerts to all active students in the platform.
+   - Navigates directly to the newly created internship view upon creation.
+
+2. **Coordinator Controls & Deletion (`frontend/src/pages/InternshipDetail.jsx`)**:
+   - Role-based authorization detecting the posting coordinator or platform administrator (`(user.role === 'coordinator' && user.id === internship.coordinator_id) || user.role === 'admin'`).
+   - "Delete Posting" action in the header deadline card (`DELETE /api/internships/:id`) with cascade confirmation dialog and redirect to `/internships`.
+
+3. **Applicant Review & Decision Management (`frontend/src/pages/InternshipDetail.jsx`)**:
+   - Integrated applicant management center querying `GET /api/internships/:id/applications`.
+   - Status filtering tabs: All, Pending, Accepted, Rejected with applicant count pills.
+   - Per-applicant card showing candidate full name, email, application timestamp, and current status pill.
+   - One-click decision buttons:
+     - **✓ Accept**: Updates status to `accepted` (`PUT /api/internships/:id/applications/:id/status`) and triggers automatic acceptance notification to the student.
+     - **✕ Reject**: Updates status to `rejected` (`PUT /api/internships/:id/applications/:id/status`) and triggers notification.
+   - Instant optimistic feedback (`✓ Saved & Notified`) and pagination controls for high applicant volumes.
+
+4. **Navigation & Route Protection**:
+   - Dedicated "+ Post New Internship" callout in `InternshipsList.jsx` for coordinator and administrator accounts.
+   - Protected route at `/internships/new` registered in `App.jsx` with `allowedRoles={['coordinator', 'admin']}`.
+   - Single-Page Application (SPA) rewrite configuration verified in `frontend/vercel.json` (`/(.*)` -> `/index.html`).
+
+
 
 
 
