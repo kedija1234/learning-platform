@@ -11,6 +11,7 @@ import CourseDetail from './pages/CourseDetail';
 import CourseCreate from './pages/CourseCreate';
 import InternshipsList from './pages/InternshipsList';
 import InternshipDetail from './pages/InternshipDetail';
+import InternshipCreate from './pages/InternshipCreate';
 import MyApplications from './pages/MyApplications';
 import MySubmissions from './pages/MySubmissions';
 import Notifications from './pages/Notifications';
@@ -54,7 +55,7 @@ export default function App() {
               path="/internships/new"
               element={
                 <ProtectedRoute allowedRoles={['coordinator', 'admin']}>
-                  <div className="content-box"><h2>Post Internship</h2><p>Coordinator posting will load here in Step 4.</p></div>
+                  <InternshipCreate />
                 </ProtectedRoute>
               }
             />

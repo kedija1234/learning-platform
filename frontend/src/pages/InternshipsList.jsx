@@ -74,6 +74,11 @@ export default function InternshipsList() {
           <h1>Internship Opportunities</h1>
           <p className="page-subtitle">Discover positions at corporate partners and submit applications</p>
         </div>
+        {(user?.role === 'coordinator' || user?.role === 'admin') && (
+          <Link to="/internships/new" className="btn btn-primary">
+            + Post New Internship
+          </Link>
+        )}
       </div>
 
       {actionSuccess && <div className="alert alert-success">{actionSuccess}</div>}
