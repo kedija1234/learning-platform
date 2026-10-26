@@ -621,6 +621,22 @@ The seed script (`backend/db/seedDb.js`) contains hard-coded sample accounts and
    ADMIN_EMAIL="admin@university.edu" ADMIN_PASSWORD="SuperSecurePassword2026!" npm run create-admin
    ```
 
+---
+
+### Step 3: Origin-Restricted CORS Architecture (`backend/src/config/cors.js`)
+
+#### Architecture & Whitelist Resolution
+The platform enforces strict Cross-Origin Resource Sharing (CORS) rules to protect API endpoints from unauthorized browser origins:
+1. **Dynamic Origin Resolution**: Configured via the `FRONTEND_URL` environment variable. Supports a single URL or a comma-separated list of production and staging origins (e.g., `FRONTEND_URL=https://unilink.vercel.app, https://portal.university.edu`).
+2. **Local Development Fallback**: When `NODE_ENV !== 'production'`, `http://localhost:5173` and `http://localhost:5174` are automatically whitelisted to facilitate seamless local Vite frontend development without manual configuration.
+3. **Production Mode Hardening**: When `NODE_ENV === 'production'`, development localhost origins are strictly disabled unless explicitly enumerated in `FRONTEND_URL`.
+4. **Non-Browser Client Support**: Requests without an `Origin` header (such as automated testing harnesses, server-to-server microservices, curl, and mobile clients) are permitted.
+5. **Strict Violation Rejection**: Requests from unauthorized origins receive an explicit `403 Forbidden` response (`CORS policy violation: Origin '<origin>' is not allowed`) and are denied the `Access-Control-Allow-Origin` header.
+
+#### Verification
+- Covered by 9 automated tests in `backend/tests/cors.test.js` validating local origins, preflight `OPTIONS` handshakes, unauthorized origin rejection, comma-separated configuration, trailing slash normalization, and production mode restrictions.
+
+
 
 
 
