@@ -550,6 +550,52 @@ TOTAL                 93 tests  ✔ 93 pass  ✘ 0 fail
    - Protected route at `/internships/new` registered in `App.jsx` with `allowedRoles={['coordinator', 'admin']}`.
    - Single-Page Application (SPA) rewrite configuration verified in `frontend/vercel.json` (`/(.*)` -> `/index.html`).
 
+---
+
+## Phase 8: Core Wrap-Up & Hardening
+
+### Step 1: Admin Backend & Frontend (User Management, Roles, Status & Statistics)
+
+#### What Was Built
+1. **Admin Backend API (`backend/src/features/admin/`)**:
+   - `admin.service.js`:
+     - `listUsers({ page, limit, search, role, is_active })`: TiDB Cloud-compatible paginated user directory with search by name/email and filters by role and status.
+     - `updateUserStatus(targetUserId, isActive, adminUserId)`: Safely deactivates or reactivates accounts. Strictly prevents administrators from deactivating their own account (400 Bad Request).
+     - `updateUserRole(targetUserId, newRole, adminUserId)`: Changes user role (`student`, `mentor`, `coordinator`, `admin`). Prevents administrators from demoting their own account (400 Bad Request).
+     - `getStats()`: Gathers system-wide analytics: user counts per role, active vs inactive count, total courses, total enrollments, total coursework submissions and graded items, total internship postings, and student applications with decision breakdown (`pending`, `accepted`, `rejected`).
+   - `admin.validation.js`: Declarative validation schemas for query parameters, role updating, and boolean status toggles.
+   - `admin.controller.js`: Clean HTTP controllers delegating to service and returning standardized envelopes.
+   - `admin.routes.js`: Express router strictly guarded by `router.use(authenticateToken, requireRole('admin'))`.
+
+2. **Automated Testing Suite (`backend/tests/admin.test.js`)**:
+   - 15 comprehensive automated test cases:
+     - Rejection of unauthenticated requests to `/api/admin/users` and `/api/admin/stats` with 401 Unauthorized.
+     - Strict role protection ensuring students, mentors, and coordinators receive 403 Forbidden.
+     - Admin user listing with pagination metadata and filters.
+     - Account deactivation (200), ensuring deactivated accounts cannot log in (403).
+     - Account reactivation (200), restoring login capability.
+     - Prevention of admin self-deactivation (400).
+     - Role modification (200) and prevention of admin self-demotion (400).
+     - Platform statistics retrieval (200).
+   - All 6 backend test suites (108 tests) pass with zero errors.
+
+3. **Admin User Management Screen (`frontend/src/pages/AdminUsers.jsx`)**:
+   - Paginated user account table mounted at `/admin/users` with real-time search and role/status filtering.
+   - Interactive role selection dropdown to reassign permissions instantly.
+   - One-click account deactivation/reactivation button with confirmation safeguards.
+   - Disabled controls for the logged-in admin's own row to prevent accidental lockout.
+
+4. **Platform Analytics & Statistics Dashboard (`frontend/src/pages/AdminStats.jsx`)**:
+   - Real-time analytics screen mounted at `/admin/stats`.
+   - Four top-level metric highlight cards (Total Users, Active Courses, Submissions, Internships).
+   - Visual breakdown progress bars for user roles, active/inactive ratios, coursework grading rates, and internship acceptance rates.
+
+5. **Navigation & Dashboard Integration**:
+   - Admin navigation links in `Navbar.jsx` (`Users`, `Statistics`, `Courses`, `Internships`).
+   - Admin action cards in `Dashboard.jsx`.
+   - Protected routes in `App.jsx` restricted to `allowedRoles={['admin']}`.
+
+
 
 
 
