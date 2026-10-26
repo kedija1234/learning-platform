@@ -6,23 +6,22 @@
 [![React](https://img.shields.io/badge/React-v18.3-61dafb.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-v5.4-purple.svg)](https://vitejs.dev/)
 [![MySQL / TiDB](https://img.shields.io/badge/Database-MySQL%20%7C%20TiDB%20Cloud-orange.svg)](https://docs.pingcap.com/tidbcloud)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
 ## Overview
 
-**UniLink** is an integrated, role-based educational and career portal designed for universities and academic institutions. It bridges the gap between academic coursework and early career opportunities by providing a unified "ERP-style" platform where students, mentors, internship coordinators, and platform administrators collaborate in a single web ecosystem.
+**UniLink** is a role-based educational and internship web platform. It connects students, mentors, internship coordinators, and administrators in a single system for course delivery, assignment tracking, and internship applications.
 
 ### The Problem It Solves
-In many academic institutions, academic learning and career development operate in disconnected silos:
-- Coursework and assignment submissions reside in one isolated learning management system.
-- Internship opportunities and company listings are scattered across email lists, physical bulletin boards, and external job boards.
-- Mentors struggle with grading workflows across multiple ad-hoc channels.
-- Coordinators lack a direct, real-time channel to notify eligible students of career opportunities and track applicant status.
-- Administrators lack centralized visibility into academic engagement, student career placement, and user permissions.
+Academic coursework and career opportunities are frequently handled through separate, disconnected channels:
+- Coursework and assignment submissions reside in one portal.
+- Internship opportunities and company postings are shared across bulletin boards and external listings.
+- Mentors manage grading through disparate tools.
+- Coordinators lack a direct, real-time channel to notify students of new opportunities.
+- Administrators lack a centralized overview of academic activity, applications, and accounts.
 
-**UniLink** unifies these workflows into a single cohesive platform: mentors manage course curriculum and grade submissions; coordinators post opportunities and evaluate candidates; students enroll in courses, turn in assignments, track grades, and apply for internships; and administrators oversee system health, permissions, and platform statistics.
+**UniLink** brings these workflows together in a unified system: mentors manage curriculum and grade submissions; coordinators post opportunities and evaluate candidates; students enroll in courses, turn in assignments, track grades, and apply for internships; and administrators manage accounts, roles, and platform statistics.
 
 ---
 
@@ -31,46 +30,46 @@ In many academic institutions, academic learning and career development operate 
 > *Replace the placeholders below with your deployed URLs and media assets.*
 
 - **Live Web Application**: `https://your-frontend-app.vercel.app` *(Placeholder)*
-- **Production API Endpoint**: `https://your-backend-api.railway.app/api` *(Placeholder)*
+- **Production API Endpoint**: `https://your-backend-api.onrender.com/api` *(Render Placeholder)*
 - **Project Walkthrough Video**: `https://youtube.com/watch?v=your_video_id` *(Placeholder)*
 
 ### Screenshots
 
-| Student Course Catalog | Mentor Course Management & Grading |
-| :---: | :---: |
-| ![Course Catalog Placeholder](https://via.placeholder.com/600x350?text=Course+Catalog) | ![Grading Drawer Placeholder](https://via.placeholder.com/600x350?text=Submissions+Grading) |
+> *Add your application screenshots to `docs/screenshots/` and link them below.*
 
-| Coordinator Internship Management | Administrator Control Center |
-| :---: | :---: |
-| ![Internship Management Placeholder](https://via.placeholder.com/600x350?text=Internship+Applications) | ![Admin Stats Placeholder](https://via.placeholder.com/600x350?text=Admin+Analytics) |
+- **Student Course Catalog**: `[Screenshot: Course catalog with keyword search and course cards]`
+- **Course Details & Submissions**: `[Screenshot: Course curriculum, resources, and assignment submission modal]`
+- **Mentor Grading**: `[Screenshot: Submissions review drawer with grade input and instructor feedback]`
+- **Coordinator Internship Center**: `[Screenshot: Internship postings and applicant status review tabs]`
+- **Administrator Dashboard**: `[Screenshot: User directory with role management and platform metrics]`
 
 ---
 
 ## Features by Role
 
 ### 🎓 Student
-- **Course Catalog & Search**: Browse all active courses with real-time keyword search and pagination.
+- **Course Catalog & Search**: Browse all active courses with keyword search and pagination.
 - **One-Click Enrollment**: Self-enroll in courses with immediate UI feedback and duplicate-enrollment prevention.
-- **Curriculum & Learning Materials**: Access course descriptions, instructor contacts, external reference links, and documentation.
-- **Assignment Submissions**: Submit coursework before deadlines; revise or update submissions prior to mentor grading.
-- **Grades & Progress Tracking**: Real-time progress bar (0–100%) calculated upon assignment completion; view awarded scores and instructor feedback.
-- **Career & Internship Discovery**: Explore internships with organization descriptions, deadlines, and applicant counts.
+- **Curriculum & Learning Materials**: Access course descriptions, instructor names, external reference links, and documentation.
+- **Assignment Submissions**: Submit coursework; revise or update submissions prior to mentor grading.
+- **Grades & Progress Tracking**: Progress bar (0–100%) calculated upon assignment completion; view awarded scores and instructor feedback.
+- **Career & Internship Discovery**: Explore internships with organization names, role descriptions, and application deadlines.
 - **Internship Applications**: Apply with one click; track application status (`pending`, `accepted`, `rejected`) in a dedicated applications center.
 - **Interactive Notifications**: Real-time unread notification badge; broadcast notifications for new internships, status updates on applications, and assignment grades.
 
 ### 👨‍🏫 Mentor
-- **Course Authoring**: Create new courses categorized by department (e.g., Computer Science, Data Science, Engineering).
-- **Curriculum Management**: Attach learning resources (documentation, external links, slides) and create structured assignments with instructions and deadlines.
+- **Course Authoring**: Create new courses with a title and curriculum description.
+- **Curriculum Management**: Attach learning resources (documentation, external links, text) and create structured assignments with instructions and deadlines.
 - **Student Roster**: View all students enrolled in the mentor's courses.
 - **Submission Grading**: Review student submissions with submission timestamps; award numeric grades (0–100) and written instructor feedback.
-- **Content Controls**: Edit course details; delete individual resources, assignments, or complete courses with cascade safeguards.
+- **Content Controls**: Delete individual resources, assignments, or complete courses with cascade safeguards.
 
 ### 🏢 Internship Coordinator
 - **Opportunity Publishing**: Post internship opportunities with company name, detailed role description, and application deadline.
 - **Student Broadcast**: Automatically dispatches a platform-wide notification to all active students whenever a new internship is posted.
 - **Applicant Review Center**: View all applicants for posted internships, filtered by decision status (`All`, `Pending`, `Accepted`, `Rejected`).
 - **Hiring Decisions**: Accept or reject candidate applications with one click, automatically notifying the student in real time.
-- **Opportunity Lifecycle**: Edit internship details or remove postings with confirmation safeguards.
+- **Opportunity Lifecycle**: Remove internship postings with confirmation safeguards.
 
 ### 🛡️ Administrator
 - **Platform Analytics Dashboard**: View aggregate metrics across the institution:
@@ -96,7 +95,7 @@ In many academic institutions, academic learning and career development operate 
 - **Testing**: Built-in Node.js test runner (`node:test`) and assertion library (`node:assert/strict`) with zero external test framework bloat.
 
 ### Frontend
-- **Framework & Build Tool**: [React 18](https://react.dev/) bundled with [Vite](https://vitejs.dev/) for lightning-fast HMR and optimized production assets.
+- **Framework & Build Tool**: [React 18](https://react.dev/) bundled with [Vite](https://vitejs.dev/) for development and optimized production assets.
 - **Routing**: [React Router v6](https://reactrouter.com/) with role-based route guards (`ProtectedRoute`) and redirect state preservation.
 - **API Client**: [Axios](https://axios-http.com/) configured with request interceptors for automatic JWT injection and response interceptors for normalized error messages and session expiration handling.
 - **Styling**: Vanilla modern CSS with CSS custom properties (variables), clean card layouts, badges, modals, responsive navigation, and accessible forms.
@@ -365,7 +364,7 @@ ADMIN_EMAIL="admin@university.edu" ADMIN_PASSWORD="SecureAdminPassword2026!" npm
 
 All responses follow a consistent JSON envelope format:
 - **Success**: `{ "success": true, "data": { ... } }` or `{ "success": true, "data": [ ... ], "pagination": { ... } }`
-- **Error**: `{ "success": false, "error": "Descriptive error message" }`
+- **Error**: `{ "success": false, "message": "Descriptive error message", "errors": [ ... ] }`
 
 ### 1. Health
 | Method | Endpoint | Role Required | Description |
@@ -487,7 +486,7 @@ Confirms clean JSX compilation, module bundling, and CSS asset generation with z
 - **Self-Service Role Selection**: The public registration endpoint currently allows users to self-select `mentor` or `coordinator` roles during account creation. In an institutional enterprise deployment, mentor and coordinator accounts should require administrative pre-approval, institutional domain email verification, or invite tokens.
 - **JWT Persistence in `localStorage`**: Tokens are stored in browser `localStorage` for simplicity in client-side state management. While common in SPAs, `localStorage` can be vulnerable to token exfiltration if the application suffers from Cross-Site Scripting (XSS). An enterprise-grade architecture would migrate to server-managed `httpOnly`, `Secure`, `SameSite=Strict` HTTP cookies.
 - **Email Verification & Password Reset**: There is currently no active SMTP or transactional email provider integration (e.g., SendGrid, Resend, AWS SES). Accounts are immediately active upon registration, and forgotten passwords currently require administrative intervention.
-- **File Upload Storage**: Assignments and resources currently accept URLs or instructional text payloads. The database schema and dependencies (`multer`, `pdf-parse`) are in place, but cloud object storage (e.g., AWS S3, Cloudflare R2) has not yet been connected for direct binary resume and coursework file uploads.
+- **File Upload Storage**: Assignments, submissions, and learning resources currently accept external URLs or text content rather than direct binary file uploads.
 - **Late Submission Enforcement**: Submissions submitted after an assignment's due date are permitted (and displayed with timestamp notices), rather than being strictly rejected by a hard server cutoff.
 
 ---
@@ -502,9 +501,3 @@ Confirms clean JSX compilation, module bundling, and CSS asset generation with z
 - **Database Portability & Cloud Readiness**: Developing code compatible with both local MySQL and serverless distributed TiDB Cloud required careful attention to TLS connection configuration and integer/type parsing nuances across database drivers.
 - **Defensive API Hardening**: Learning how to restrict CORS policies properly, sanitize input with `express-validator`, safeguard production databases against accidental test seeding, and audit npm dependencies against Denial of Service advisories instilled a security-first engineering mindset.
 - **Automated Integration Testing**: Writing 117 automated integration tests using Node's native test runner proved that resilient software is built through comprehensive regression coverage rather than manual endpoint clicking.
-
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
