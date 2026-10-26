@@ -1,5 +1,5 @@
 import express from 'express';
-import cors from 'cors';
+import corsMiddleware from './config/cors.js';
 import healthRoutes from './routes/health.routes.js';
 import authRoutes from './features/auth/auth.routes.js';
 import coursesRoutes from './features/courses/courses.routes.js';
@@ -15,8 +15,8 @@ import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
 
-// Core middleware
-app.use(cors());
+// Core middleware: strict CORS origin validation, JSON & form parsers
+app.use(corsMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
