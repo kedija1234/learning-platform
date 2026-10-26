@@ -15,6 +15,8 @@ import InternshipCreate from './pages/InternshipCreate';
 import MyApplications from './pages/MyApplications';
 import MySubmissions from './pages/MySubmissions';
 import Notifications from './pages/Notifications';
+import AdminUsers from './pages/AdminUsers';
+import AdminStats from './pages/AdminStats';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -75,6 +77,25 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={['student']}>
                   <MySubmissions />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin Management Portals */}
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminUsers />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/stats"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminStats />
                 </ProtectedRoute>
               }
             />

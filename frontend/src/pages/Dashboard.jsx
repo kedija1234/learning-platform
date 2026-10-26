@@ -104,10 +104,31 @@ export default function Dashboard() {
           {user?.role === 'admin' && (
             <>
               <div className="action-card">
-                <div className="action-card-icon">🛡️</div>
-                <h3>Platform Management</h3>
-                <p>Oversee courses, mentorship assignments, and internship opportunities across all faculties.</p>
-                <Link to="/courses" className="btn btn-primary btn-sm">Manage Courses</Link>
+                <div className="action-card-icon">👥</div>
+                <h3>User Accounts & Roles</h3>
+                <p>Inspect registered users, manage role assignments, and toggle account activation status.</p>
+                <Link to="/admin/users" className="btn btn-primary btn-sm">Manage Users</Link>
+              </div>
+
+              <div className="action-card">
+                <div className="action-card-icon">📊</div>
+                <h3>Platform Analytics</h3>
+                <p>View real-time system counts across roles, courses, enrollments, submissions, and internships.</p>
+                <Link to="/admin/stats" className="btn btn-primary btn-sm">View Statistics</Link>
+              </div>
+
+              <div className="action-card">
+                <div className="action-card-icon">📚</div>
+                <h3>Course Catalog</h3>
+                <p>Oversee published courses, curricula, learning resources, and assignments platform-wide.</p>
+                <Link to="/courses" className="btn btn-outline btn-sm">Manage Courses</Link>
+              </div>
+
+              <div className="action-card">
+                <div className="action-card-icon">💼</div>
+                <h3>Career Opportunities</h3>
+                <p>Review corporate partner internship listings, student applications, and decisions.</p>
+                <Link to="/internships" className="btn btn-outline btn-sm">Manage Internships</Link>
               </div>
             </>
           )}

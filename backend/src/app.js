@@ -9,6 +9,7 @@ import {
 } from './features/submissions/submissions.routes.js';
 import internshipsRoutes from './features/internships/internships.routes.js';
 import notificationsRoutes from './features/notifications/notifications.routes.js';
+import adminRoutes from './features/admin/admin.routes.js';
 import notFoundHandler from './middleware/notFoundHandler.js';
 import errorHandler from './middleware/errorHandler.js';
 
@@ -37,6 +38,7 @@ app.use('/api/submissions', submissionsRouter);
 app.use('/api/assignments', assignmentSubmissionsRouter);
 app.use('/api/internships', internshipsRoutes);
 app.use('/api/notifications', notificationsRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Catch 404 routes
 app.use(notFoundHandler);

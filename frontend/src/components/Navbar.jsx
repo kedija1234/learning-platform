@@ -108,6 +108,24 @@ export default function Navbar() {
               </>
             )}
 
+            {/* Admin Links */}
+            {user?.role === 'admin' && (
+              <>
+                <Link to="/admin/users" className={`nav-link ${isActive('/admin/users')}`} onClick={() => setMobileMenuOpen(false)}>
+                  Users
+                </Link>
+                <Link to="/admin/stats" className={`nav-link ${isActive('/admin/stats')}`} onClick={() => setMobileMenuOpen(false)}>
+                  Statistics
+                </Link>
+                <Link to="/courses" className={`nav-link ${isActive('/courses')}`} onClick={() => setMobileMenuOpen(false)}>
+                  Courses
+                </Link>
+                <Link to="/internships" className={`nav-link ${isActive('/internships')}`} onClick={() => setMobileMenuOpen(false)}>
+                  Internships
+                </Link>
+              </>
+            )}
+
             {/* Right side: Notification badge & user menu */}
             <div className="navbar-actions">
               <Link
