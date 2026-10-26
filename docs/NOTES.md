@@ -595,6 +595,33 @@ TOTAL                 93 tests  ✔ 93 pass  ✘ 0 fail
    - Admin action cards in `Dashboard.jsx`.
    - Protected routes in `App.jsx` restricted to `allowedRoles={['admin']}`.
 
+---
+
+### Step 2: First Admin Account Provisioning Script (`backend/scripts/createAdmin.js`)
+
+#### Purpose & Production Rationale
+The seed script (`backend/db/seedDb.js`) contains hard-coded sample accounts and intentionally refuses to execute when `DB_SSL=true` to prevent polluting or corrupting live staging or production databases. To bootstrap the first administrative account on a new live deployment (such as TiDB Cloud), the dedicated provisioning script `backend/scripts/createAdmin.js` must be used instead.
+
+#### Security & Validation Features
+- **Dynamic Credential Input**: Never contains hard-coded emails or passwords. Reads from environment variables (`ADMIN_EMAIL` and `ADMIN_PASSWORD`) or prompts the operator interactively in the terminal.
+- **Strict Password Strength**: Refuses passwords shorter than 12 characters to ensure production administrative security.
+- **TiDB Cloud & SSL Compatibility**: Full support for cloud databases with TLS enabled (`DB_SSL=true`).
+- **Idempotency**: If the user already exists, it securely updates their password hash, ensures `role = 'admin'`, and marks the account `is_active = TRUE`.
+
+#### Usage Examples
+1. **Interactive Prompt**:
+   ```bash
+   cd backend
+   npm run create-admin
+   # Prompts for Email, First Name, Last Name, and Password (min 12 chars)
+   ```
+
+2. **Automated / CI / Environment Variable Execution**:
+   ```bash
+   ADMIN_EMAIL="admin@university.edu" ADMIN_PASSWORD="SuperSecurePassword2026!" npm run create-admin
+   ```
+
+
 
 
 
