@@ -636,6 +636,55 @@ The platform enforces strict Cross-Origin Resource Sharing (CORS) rules to prote
 #### Verification
 - Covered by 9 automated tests in `backend/tests/cors.test.js` validating local origins, preflight `OPTIONS` handshakes, unauthorized origin rejection, comma-separated configuration, trailing slash normalization, and production mode restrictions.
 
+---
+
+### Step 4: Test Suite Verification, NPM Security Audit & Git Secrets Scan
+
+#### 1. Automated Test Suite Verification
+- **Backend Test Suites**: All **117 automated tests** across 7 modular test suites pass cleanly with 0 failures:
+  - `admin.test.js`: 15 tests (user directory, role updating, account status toggle, self-modification guards, platform statistics)
+  - `auth.test.js`: 13 tests (registration, login, JWT issuance, profile retrieval, input validation)
+  - `cors.test.js`: 9 tests (origin whitelist, regex/string normalization, comma-separated origins, dev fallback, options preflight)
+  - `courses.test.js`: 21 tests (curriculum CRUD, resources, assignments, enrollment, permission checks)
+  - `internships.test.js`: 24 tests (opportunity posting, search, applications lifecycle, candidate review, acceptance notifications)
+  - `notifications.test.js`: 15 tests (broadcast delivery, read status tracking, unread count, tenant isolation)
+  - `submissions.test.js`: 20 tests (assignment submissions, grading, feedback, permissions, student notifications)
+- **Frontend Production Build**: Vite production compilation (`npm run build`) runs cleanly without TypeScript/JSX syntax errors or missing asset references (generates optimized CSS and JS bundles in `frontend/dist`).
+
+#### 2. NPM Security Audit Findings & Remediations
+- **Backend Audit**:
+  - **Identified Issue**: 1 High severity advisory on `body-parser` (versions 2.0.0 - 2.3.0, GHSA-27r3-jxmh-p828).
+    - *Explanation in Simple Words*: If a malicious client sends compressed data (like a gzip payload) in an HTTP request body and appends trailing junk bytes, the parser could get stuck or throw an unhandled internal exception, potentially causing the Node process to hang or crash (Denial of Service).
+    - *Remediation*: Safely upgraded `body-parser` from `2.3.0` to `2.4.0` via non-breaking patch update (`npm audit fix`).
+    - *Outcome*: **0 vulnerabilities** in `backend`. All 117 tests re-verified and passing.
+- **Frontend Audit**:
+  - **Identified Issues**: 4 advisories (3 moderate, 1 high) in development tooling and routing dependencies:
+    1. `vite` (High) / `esbuild` (Moderate) (GHSA-fx2h-pf6j-xcff, GHSA-587h-7wmj-h5pm, GHSA-67mh-4wv8-2f99):
+       - *Explanation in Simple Words*: On Windows machines, Vite's local development server file access deny list (`server.fs.deny`) and editor-opening utility could be bypassed using alternative Windows path notations (such as 8.3 short paths or UNC paths), potentially exposing local files to another program on the local computer while developing.
+       - *Context & Impact*: These issues strictly affect the local development server CLI (`vite dev`). They have **zero presence or risk in production** because Vite and esbuild are development-only build tools; the production artifact deployed to Vercel or CDN consists exclusively of static compiled HTML, JS, and CSS files.
+       - *Remediation Decision*: Upgrading requires `npm audit fix --force`, which would install `vite@8.x` (a major breaking change from Vite 5 that would break existing Vite React plugins and configuration). Preserved Vite 5 to maintain project stability.
+    2. `react-router` / `react-router-dom` (Moderate) (GHSA-wrjc-x8rr-h8h6, GHSA-337j-9hxr-rhxg):
+       - *Explanation in Simple Words*: In older browsers, if untrusted user input is passed directly into a `<Link>` or navigation target, backslashes (e.g. `\\evil.com`) could trigger an open redirect. Additionally, a deserialization issue exists in server-side rendered (SSR) hydration.
+       - *Context & Impact*: UniLink is a pure client-side Single-Page Application (SPA) with zero SSR, and all `<Link>` routes in UniLink are hardcoded application paths (e.g. `/courses`, `/internships`), never accepting unvalidated external URLs.
+       - *Remediation Decision*: Upgrading requires `npm audit fix --force` which would install `react-router-dom@7.x` (a major breaking architectural shift from v6). Kept on stable `react-router-dom` v6.
+
+#### 3. Git Secrets & Repository Integrity Scan
+A comprehensive security scan was performed across all currently tracked repository files and the entire Git commit history:
+- **Tracked Environment Files**: Only `.env.example` templates are tracked (`backend/.env.example` and `frontend/.env.example`). Both contain strictly non-sensitive placeholder variables (`your_db_password`, `change_me`, `https://your-frontend-app.vercel.app`).
+- **Active `.env` Files**: Verified that neither `backend/.env` nor `frontend/.env` is tracked in Git. The root `.gitignore` was established in the very first commit (`276fba7`) and ignores all `.env*` files.
+- **Git History Secrets Scan**: Inspected all 48 commits and diffs across the entire project history:
+  - `git log --all --full-history -- "**.env*"`: Confirmed that no actual `.env` file was ever committed to the repository at any point.
+  - Regex scans across historical commits for high-entropy secrets:
+    - Private Keys (`BEGIN PRIVATE KEY`): **0 matches**
+    - AWS Access Keys (`AKIA...`): **0 matches**
+    - GitHub Personal Access Tokens (`ghp_...`, `github_pat_...`): **0 matches**
+    - Google API Keys (`AIza...`): **0 matches**
+    - Stripe Secret Keys (`sk_live_...`, `sk_test_...`): **0 matches**
+    - Slack Tokens (`xox...`): **0 matches**
+    - Production Database Passwords & URIs: **0 matches**
+  - **Local Seed Credentials**: Confirmed that the only passwords present in the codebase are the explicitly documented local development seed password (`Password123!`), which is restricted to local offline testing and strictly blocked from running when connecting to cloud/SSL databases (`DB_SSL=true`).
+
+
 
 
 
