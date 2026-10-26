@@ -703,6 +703,34 @@ Authored the root `README.md` for "UniLink: University Learning & Internship Pla
 - **Visual Placeholders**: Sections for live links, demo walkthrough video, and screenshot previews.
 - **Personalized "What I Learned"**: Editable reflection highlighting full-stack design, defensive API hardening, distributed SQL compatibility, and automated integration testing.
 
+---
+
+### Step 6: Zero-Cost Production Deployment Guide (`docs/DEPLOYMENT.md`)
+
+#### Content & Structure
+Authored the comprehensive deployment guide for deploying UniLink across 100% free-tier cloud infrastructure:
+1. **TiDB Cloud (Database Layer)**:
+   - Creation of a Serverless / Starter free cluster.
+   - Obtaining host, port (4000), user, and generated password from the Connect dialog.
+   - Initializing database (`CREATE DATABASE IF NOT EXISTS learning_platform`) and executing `schema.sql` in strict dependency order (`users` -> `courses` -> `enrollments` -> `resources` -> `assignments` -> `submissions` -> `internships` -> `applications` -> `notifications`).
+   - Documenting that TiDB compatibility notices regarding `CHECK`, `FULLTEXT`, and `ENGINE=InnoDB` are harmless.
+2. **Render (Backend Web Service)**:
+   - Configuration: Root directory `backend`, build command `npm install`, start command `npm start`, Free instance type.
+   - Environment variables table with non-sensitive placeholders: `NODE_ENV=production`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_NAME`, `DB_SSL=true`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `FRONTEND_URL`.
+   - Health check endpoint verification: `GET /api/health`.
+3. **Vercel (Frontend Single Page Application)**:
+   - Configuration: Root directory `frontend`, Vite preset.
+   - Environment variable: `VITE_API_BASE_URL` pointing to Render API (`https://<service>.onrender.com/api`) without trailing slash.
+   - Automatic SPA client-side route fallback via `frontend/vercel.json` rewrites.
+4. **CORS Whitelist Finalization**:
+   - Explicit deployment sequencing: deploying backend first, deploying frontend to obtain the Vercel domain, and updating `FRONTEND_URL` on Render without a trailing slash.
+5. **Live Administrator Account Provisioning**:
+   - Safe execution of `npm run create-admin` against TiDB Cloud with `DB_SSL=true` directly from local terminal without hardcoding or committing credentials.
+   - Strict reminder that `seedDb.js` must never be run on live databases and is blocked by SSL checks.
+6. **Production Troubleshooting Matrix**:
+   - Clear diagnostic and resolution steps for: Network Error / Failed to fetch, CORS policy violations, `ENOTFOUND` host errors, database `Access denied` / TLS errors, `404 Not Found` on SPA route refresh, and Render free tier container spin-down / sleeping behaviors with uptime monitor recommendations.
+
+
 
 
 
