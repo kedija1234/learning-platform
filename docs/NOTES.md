@@ -684,6 +684,26 @@ A comprehensive security scan was performed across all currently tracked reposit
     - Production Database Passwords & URIs: **0 matches**
   - **Local Seed Credentials**: Confirmed that the only passwords present in the codebase are the explicitly documented local development seed password (`Password123!`), which is restricted to local offline testing and strictly blocked from running when connecting to cloud/SSL databases (`DB_SSL=true`).
 
+---
+
+### Step 5: Comprehensive Project README Documentation (`README.md`)
+
+#### Content & Structure
+Authored the root `README.md` for "UniLink: University Learning & Internship Platform" (subtitle: "A simple ERP-style learning and internship platform"):
+- **Architecture Overview & Problem Statement**: Clarified the university friction point—unifying siloed coursework, grading, and internship workflows into an ERP-style single pane of glass.
+- **Role Capabilities**: Detailed feature breakdown for Students, Mentors, Internship Coordinators, and Administrators.
+- **Technology Stack**: Documented Express 5, React 18, Vite, MySQL/TiDB Cloud, bcryptjs, JWT, Axios, and native Node test runner.
+- **Repository Directory Tree**: Complete ASCII tree outlining feature modularity across `backend/`, `frontend/`, and `docs/`.
+- **Local Setup Guide**: Step-by-step instructions for repository cloning, dependency installation, database initialization (`npm run db:init`), local test seeding (`npm run db:seed`), server launch (`npm run dev`), and admin bootstrapping (`npm run create-admin`).
+- **Environment Variables**: Comprehensive table of backend and frontend environment variables with non-sensitive placeholder values.
+- **API Endpoint Reference**: Grouped by feature domain (Health, Auth, Courses, Submissions, Internships, Notifications, Admin) detailing HTTP methods, URL routes, required roles, and standardized JSON envelopes.
+- **Automated Testing Guide**: Instructions for executing the 117 integration tests and verifying production frontend builds.
+- **Security Engineering Decisions**: Highlighted password hashing, JWT stateless tokens, multi-tiered RBAC, input validation, origin-restricted CORS, zero hardcoded secrets, seed database protection, and admin self-protection safeguards.
+- **Known Limitations**: Accurately noted open role registration, localStorage JWT persistence, absence of transactional email verification, and late submission policies.
+- **Visual Placeholders**: Sections for live links, demo walkthrough video, and screenshot previews.
+- **Personalized "What I Learned"**: Editable reflection highlighting full-stack design, defensive API hardening, distributed SQL compatibility, and automated integration testing.
+
+
 
 
 
