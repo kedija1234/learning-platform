@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import apiClient from '../api/client';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import apiClient from "../api/client";
 
 export default function Navbar() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -10,19 +10,19 @@ export default function Navbar() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Poll or fetch unread notification count
+  // Fetch the unread notification count now, then every 30 seconds
   useEffect(() => {
     if (!isAuthenticated) return;
 
     let isMounted = true;
     async function fetchUnread() {
       try {
-        const { data } = await apiClient.get('/notifications/unread-count');
+        const { data } = await apiClient.get("/notifications/unread-count");
         if (isMounted) {
           setUnreadCount(data?.data?.unread_count || 0);
         }
       } catch (err) {
-        // Silent catch for background notification poll
+        // Ignore errors from the background poll
       }
     }
 
@@ -36,17 +36,17 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
-  const isActive = (path) => (location.pathname === path ? 'active-link' : '');
+  const isActive = (path) => (location.pathname === path ? "active-link" : "");
+  const closeMenu = () => setMobileMenuOpen(false);
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-brand">
-          <span className="brand-icon">🎓</span>
-          <span className="brand-title">UniPlatform</span>
+          <span className="brand-title">UniLink</span>
         </Link>
 
         {isAuthenticated && (
@@ -55,98 +55,150 @@ export default function Navbar() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? '✕' : '☰'}
+            {mobileMenuOpen ? "✕" : "☰"}
           </button>
         )}
 
         {isAuthenticated && (
-          <div className={`navbar-links ${mobileMenuOpen ? 'open' : ''}`}>
-            {/* Common link */}
-            <Link to="/" className={`nav-link ${isActive('/')}`} onClick={() => setMobileMenuOpen(false)}>
-              Dashboard
+          <div className={`navbar-links ${mobileMenuOpen ? "open" : ""}`}>
+            <Link
+              to="/"
+              className={`nav-link ${isActive("/")}`}
+              onClick={closeMenu}
+            >
+              Home
             </Link>
 
-            {/* Student Links */}
-            {user?.role === 'student' && (
+            {user?.role === "student" && (
               <>
-                <Link to="/courses" className={`nav-link ${isActive('/courses')}`} onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/courses"
+                  className={`nav-link ${isActive("/courses")}`}
+                  onClick={closeMenu}
+                >
                   Courses
                 </Link>
-                <Link to="/internships" className={`nav-link ${isActive('/internships')}`} onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/internships"
+                  className={`nav-link ${isActive("/internships")}`}
+                  onClick={closeMenu}
+                >
                   Internships
                 </Link>
-                <Link to="/applications" className={`nav-link ${isActive('/applications')}`} onClick={() => setMobileMenuOpen(false)}>
-                  Applications
+                <Link
+                  to="/applications"
+                  className={`nav-link ${isActive("/applications")}`}
+                  onClick={closeMenu}
+                >
+                  My applications
                 </Link>
-                <Link to="/submissions" className={`nav-link ${isActive('/submissions')}`} onClick={() => setMobileMenuOpen(false)}>
-                  Grades
+                <Link
+                  to="/submissions"
+                  className={`nav-link ${isActive("/submissions")}`}
+                  onClick={closeMenu}
+                >
+                  My grades
                 </Link>
               </>
             )}
 
-            {/* Mentor Links */}
-            {user?.role === 'mentor' && (
+            {user?.role === "mentor" && (
               <>
-                <Link to="/courses" className={`nav-link ${isActive('/courses')}`} onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/courses"
+                  className={`nav-link ${isActive("/courses")}`}
+                  onClick={closeMenu}
+                >
                   Courses
                 </Link>
-                <Link to="/courses/new" className={`nav-link ${isActive('/courses/new')}`} onClick={() => setMobileMenuOpen(false)}>
-                  + New Course
+                <Link
+                  to="/courses/new"
+                  className={`nav-link ${isActive("/courses/new")}`}
+                  onClick={closeMenu}
+                >
+                  New course
                 </Link>
               </>
             )}
 
-            {/* Coordinator Links */}
-            {user?.role === 'coordinator' && (
+            {user?.role === "coordinator" && (
               <>
-                <Link to="/internships" className={`nav-link ${isActive('/internships')}`} onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/internships"
+                  className={`nav-link ${isActive("/internships")}`}
+                  onClick={closeMenu}
+                >
                   Internships
                 </Link>
-                <Link to="/internships/new" className={`nav-link ${isActive('/internships/new')}`} onClick={() => setMobileMenuOpen(false)}>
-                  + Post Internship
+                <Link
+                  to="/internships/new"
+                  className={`nav-link ${isActive("/internships/new")}`}
+                  onClick={closeMenu}
+                >
+                  Post internship
                 </Link>
               </>
             )}
 
-            {/* Admin Links */}
-            {user?.role === 'admin' && (
+            {user?.role === "admin" && (
               <>
-                <Link to="/admin/users" className={`nav-link ${isActive('/admin/users')}`} onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/admin/users"
+                  className={`nav-link ${isActive("/admin/users")}`}
+                  onClick={closeMenu}
+                >
                   Users
                 </Link>
-                <Link to="/admin/stats" className={`nav-link ${isActive('/admin/stats')}`} onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/admin/stats"
+                  className={`nav-link ${isActive("/admin/stats")}`}
+                  onClick={closeMenu}
+                >
                   Statistics
                 </Link>
-                <Link to="/courses" className={`nav-link ${isActive('/courses')}`} onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/courses"
+                  className={`nav-link ${isActive("/courses")}`}
+                  onClick={closeMenu}
+                >
                   Courses
                 </Link>
-                <Link to="/internships" className={`nav-link ${isActive('/internships')}`} onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  to="/internships"
+                  className={`nav-link ${isActive("/internships")}`}
+                  onClick={closeMenu}
+                >
                   Internships
                 </Link>
               </>
             )}
 
-            {/* Right side: Notification badge & user menu */}
             <div className="navbar-actions">
               <Link
                 to="/notifications"
-                className={`notification-bell ${isActive('/notifications')}`}
+                className={`notification-bell ${isActive("/notifications")}`}
                 title="Notifications"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={closeMenu}
               >
-                🔔
-                {unreadCount > 0 && <span className="notification-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>}
+                Alerts
+                {unreadCount > 0 && (
+                  <span className="notification-badge">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
               </Link>
 
               <div className="user-profile-badge">
                 <span className="user-name">
                   {user?.first_name} {user?.last_name}
                 </span>
-                <span className={`role-tag role-${user?.role}`}>{user?.role}</span>
+                <span className={`role-tag role-${user?.role}`}>
+                  {user?.role}
+                </span>
               </div>
 
               <button onClick={handleLogout} className="btn btn-outline btn-sm">
-                Log Out
+                Log out
               </button>
             </div>
           </div>

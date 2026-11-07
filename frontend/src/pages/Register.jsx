@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    password: '',
-    role: 'student',
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+    role: "student",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const { register } = useAuth();
@@ -25,19 +25,19 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      setError("Password must be at least 8 characters long");
       return;
     }
 
     setSubmitting(true);
     try {
       await register(formData);
-      navigate('/', { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
-      setError(err.friendlyMessage || 'Failed to create account');
+      setError(err.friendlyMessage || "Failed to create account");
     } finally {
       setSubmitting(false);
     }
@@ -47,9 +47,10 @@ export default function Register() {
     <div className="auth-wrapper">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="auth-logo">🎓</div>
-          <h2>Create an Account</h2>
-          <p className="auth-subtitle">Join the University Learning & Internship Platform</p>
+          <h2>Create your account</h2>
+          <p className="auth-subtitle">
+            Join UniLink to learn, submit work and find internships.
+          </p>
         </div>
 
         {error && <div className="alert alert-error">{error}</div>}
@@ -57,28 +58,28 @@ export default function Register() {
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="first_name">First Name</label>
+              <label htmlFor="first_name">First name</label>
               <input
                 id="first_name"
                 name="first_name"
                 type="text"
                 required
                 className="form-control"
-                placeholder="Jane"
+                placeholder="Selamawit"
                 value={formData.first_name}
                 onChange={handleChange}
                 disabled={submitting}
               />
             </div>
             <div className="form-group">
-              <label htmlFor="last_name">Last Name</label>
+              <label htmlFor="last_name">Last name</label>
               <input
                 id="last_name"
                 name="last_name"
                 type="text"
                 required
                 className="form-control"
-                placeholder="Doe"
+                placeholder="Tesfaye"
                 value={formData.last_name}
                 onChange={handleChange}
                 disabled={submitting}
@@ -87,14 +88,14 @@ export default function Register() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">Email</label>
             <input
               id="email"
               name="email"
               type="email"
               required
               className="form-control"
-              placeholder="jane.doe@university.edu"
+              placeholder="name@example.com"
               value={formData.email}
               onChange={handleChange}
               disabled={submitting}
@@ -102,7 +103,7 @@ export default function Register() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password (min 8 characters)</label>
+            <label htmlFor="password">Password (at least 8 characters)</label>
             <input
               id="password"
               name="password"
@@ -110,7 +111,7 @@ export default function Register() {
               required
               minLength={8}
               className="form-control"
-              placeholder="••••••••"
+              placeholder="Choose a password"
               value={formData.password}
               onChange={handleChange}
               disabled={submitting}
@@ -118,7 +119,7 @@ export default function Register() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="role">I am joining as a:</label>
+            <label htmlFor="role">I am a</label>
             <select
               id="role"
               name="role"
@@ -127,20 +128,33 @@ export default function Register() {
               onChange={handleChange}
               disabled={submitting}
             >
-              <option value="student">Student (Learn courses & apply to internships)</option>
-              <option value="mentor">Mentor (Create courses & grade assignments)</option>
-              <option value="coordinator">Coordinator (Post internships & review applicants)</option>
+              <option value="student">
+                Student: take courses and apply to internships
+              </option>
+              <option value="mentor">
+                Mentor: create courses and grade work
+              </option>
+              <option value="coordinator">
+                Coordinator: post internships and review applicants
+              </option>
             </select>
           </div>
 
-          <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-            {submitting ? 'Creating Account...' : 'Create Account'}
+          <button
+            type="submit"
+            className="btn btn-primary btn-block"
+            disabled={submitting}
+          >
+            {submitting ? "Creating account..." : "Create account"}
           </button>
         </form>
 
         <div className="auth-footer">
           <p>
-            Already have an account? <Link to="/login" className="auth-link">Sign in here</Link>
+            Already have an account?{" "}
+            <Link to="/login" className="auth-link">
+              Sign in
+            </Link>
           </p>
         </div>
       </div>
