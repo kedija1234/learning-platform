@@ -79,7 +79,7 @@ export default function Notifications() {
         <div className="header-actions">
           <div className="filter-button-group">
             <button
-              className={`btn btn-sm ${!unreadOnly ? 'btn-primary' : 'btn-outline'}`}
+              className={`btn btn-sm btn-outline ${!unreadOnly ? 'active' : ''}`}
               onClick={() => {
                 setUnreadOnly(false);
                 setPage(1);
@@ -88,7 +88,7 @@ export default function Notifications() {
               All
             </button>
             <button
-              className={`btn btn-sm ${unreadOnly ? 'btn-primary' : 'btn-outline'}`}
+              className={`btn btn-sm btn-outline ${unreadOnly ? 'active' : ''}`}
               onClick={() => {
                 setUnreadOnly(true);
                 setPage(1);
@@ -103,7 +103,7 @@ export default function Notifications() {
             onClick={handleMarkAllRead}
             disabled={markingAll || !hasUnread}
           >
-            {markingAll ? 'Updating...' : '✓ Mark All as Read'}
+            {markingAll ? 'Updating...' : 'Mark All as Read'}
           </button>
         </div>
       </div>
@@ -117,7 +117,6 @@ export default function Notifications() {
         </div>
       ) : notifications.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-icon">🔔</span>
           <h3>No notifications</h3>
           <p>{unreadOnly ? 'You have no unread notifications.' : 'You do not have any notifications at this time.'}</p>
         </div>
@@ -133,6 +132,12 @@ export default function Notifications() {
                   onClick={() => handleMarkOne(notif)}
                   role="button"
                   tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleMarkOne(notif);
+                    }
+                  }}
                 >
                   <div className="notif-indicator">
                     {isUnread && <span className="unread-dot" title="Unread"></span>}

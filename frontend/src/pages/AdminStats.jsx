@@ -65,14 +65,13 @@ export default function AdminStats() {
           <p className="page-subtitle">Real-time counts and metrics across user roles, curriculum, coursework, and internship programs</p>
         </div>
         <button className="btn btn-outline btn-sm" onClick={fetchStats}>
-          🔄 Refresh Metrics
+          Refresh Metrics
         </button>
       </div>
 
       {/* Top Level Metric Summary Cards */}
       <div className="stats-metric-grid">
         <div className="metric-card metric-primary">
-          <div className="metric-icon">👥</div>
           <div className="metric-body">
             <span className="metric-label">Total Users</span>
             <span className="metric-value">{users.total}</span>
@@ -81,7 +80,6 @@ export default function AdminStats() {
         </div>
 
         <div className="metric-card metric-success">
-          <div className="metric-icon">📚</div>
           <div className="metric-body">
             <span className="metric-label">Active Courses</span>
             <span className="metric-value">{courses.total}</span>
@@ -90,7 +88,6 @@ export default function AdminStats() {
         </div>
 
         <div className="metric-card metric-warning">
-          <div className="metric-icon">📝</div>
           <div className="metric-body">
             <span className="metric-label">Coursework Submissions</span>
             <span className="metric-value">{submissions.total}</span>
@@ -99,7 +96,6 @@ export default function AdminStats() {
         </div>
 
         <div className="metric-card metric-info">
-          <div className="metric-icon">💼</div>
           <div className="metric-body">
             <span className="metric-label">Internship Postings</span>
             <span className="metric-value">{internships.total}</span>
@@ -126,7 +122,7 @@ export default function AdminStats() {
                 <div className="progress-bar-bg">
                   <div
                     className="progress-bar-fill"
-                    style={{ width: `${users.total > 0 ? (users.students / users.total) * 100 : 0}%`, backgroundColor: '#3b82f6' }}
+                    style={{ width: `${users.total > 0 ? (users.students / users.total) * 100 : 0}%`, backgroundColor: 'var(--teal)' }}
                   ></div>
                 </div>
               </div>
@@ -139,7 +135,7 @@ export default function AdminStats() {
                 <div className="progress-bar-bg">
                   <div
                     className="progress-bar-fill"
-                    style={{ width: `${users.total > 0 ? (users.mentors / users.total) * 100 : 0}%`, backgroundColor: '#f59e0b' }}
+                    style={{ width: `${users.total > 0 ? (users.mentors / users.total) * 100 : 0}%`, backgroundColor: 'var(--deep-teal)' }}
                   ></div>
                 </div>
               </div>
@@ -152,7 +148,7 @@ export default function AdminStats() {
                 <div className="progress-bar-bg">
                   <div
                     className="progress-bar-fill"
-                    style={{ width: `${users.total > 0 ? (users.coordinators / users.total) * 100 : 0}%`, backgroundColor: '#8b5cf6' }}
+                    style={{ width: `${users.total > 0 ? (users.coordinators / users.total) * 100 : 0}%`, backgroundColor: 'var(--teal-hover)' }}
                   ></div>
                 </div>
               </div>
@@ -165,7 +161,7 @@ export default function AdminStats() {
                 <div className="progress-bar-bg">
                   <div
                     className="progress-bar-fill"
-                    style={{ width: `${users.total > 0 ? (users.admins / users.total) * 100 : 0}%`, backgroundColor: '#ef4444' }}
+                    style={{ width: `${users.total > 0 ? (users.admins / users.total) * 100 : 0}%`, backgroundColor: 'var(--ink)' }}
                   ></div>
                 </div>
               </div>
@@ -228,7 +224,7 @@ export default function AdminStats() {
               <div className="progress-bar-bg">
                 <div
                   className="progress-bar-fill"
-                  style={{ width: `${gradingRate}%`, backgroundColor: '#10b981' }}
+                  style={{ width: `${gradingRate}%`, backgroundColor: 'var(--teal)' }}
                 ></div>
               </div>
             </div>
@@ -277,7 +273,7 @@ export default function AdminStats() {
               <div className="progress-bar-bg">
                 <div
                   className="progress-bar-fill"
-                  style={{ width: `${acceptanceRate}%`, backgroundColor: '#10b981' }}
+                  style={{ width: `${acceptanceRate}%`, backgroundColor: 'var(--teal)' }}
                 ></div>
               </div>
             </div>

@@ -71,7 +71,7 @@ export default function CoursesList() {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-outline">
           Search
         </button>
         {search && (
@@ -99,7 +99,6 @@ export default function CoursesList() {
         </div>
       ) : courses.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-icon">🔍</span>
           <h3>No courses found</h3>
           <p>{search ? `No courses matching "${search}". Try different keywords.` : 'There are currently no published courses.'}</p>
           {search && (
@@ -116,7 +115,7 @@ export default function CoursesList() {
                 <div className="course-card-body">
                   <div className="course-card-header">
                     <span className="category-badge">{course.category || 'General'}</span>
-                    <span className="enrolled-badge">👥 {course.enrolled_count || 0} Enrolled</span>
+                    <span className="enrolled-badge">{course.enrolled_count || 0} Enrolled</span>
                   </div>
                   <h3 className="course-title">{course.title}</h3>
                   <p className="course-desc">
@@ -127,7 +126,7 @@ export default function CoursesList() {
                   </p>
                 </div>
                 <div className="course-card-footer">
-                  <Link to={`/courses/${course.id}`} className="btn btn-primary btn-sm btn-block">
+                  <Link to={`/courses/${course.id}`} className="btn btn-outline btn-sm btn-block">
                     View Course Details →
                   </Link>
                 </div>

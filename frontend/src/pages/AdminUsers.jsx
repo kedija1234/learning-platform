@@ -132,7 +132,7 @@ export default function AdminUsers() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
-          <button type="submit" className="btn btn-primary">Search</button>
+          <button type="submit" className="btn btn-outline">Search</button>
         </form>
 
         <div className="admin-filter-controls">
@@ -180,7 +180,6 @@ export default function AdminUsers() {
         </div>
       ) : users.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-icon">👥</span>
           <h3>No users match your criteria</h3>
           <p>Try modifying your search query or reset the filters.</p>
           <button className="btn btn-outline btn-sm" onClick={handleClearFilters} style={{ marginTop: '0.75rem' }}>
@@ -233,7 +232,7 @@ export default function AdminUsers() {
 
                     <td>
                       <span className={`status-pill ${u.is_active ? 'status-accepted' : 'status-rejected'}`}>
-                        {u.is_active ? '✓ Active' : '✕ Deactivated'}
+                        {u.is_active ? 'Active' : 'Deactivated'}
                       </span>
                     </td>
 

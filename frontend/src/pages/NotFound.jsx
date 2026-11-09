@@ -7,7 +7,7 @@ export default function NotFound() {
       <h1>404</h1>
       <h2>Page Not Found</h2>
       <p>The page you are looking for does not exist or has been moved.</p>
-      <Link to="/" className="btn btn-primary" style={{ marginTop: '1.5rem', display: 'inline-block' }}>
+      <Link to="/" className="btn btn-outline">
         Return to Dashboard
       </Link>
     </div>

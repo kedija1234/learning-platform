@@ -44,7 +44,7 @@ export default function ResourceModal({ courseId, isOpen, onClose, onSuccess }) 
             <p className="modal-subtitle">Attach reference materials, slides, or links for enrolled students</p>
           </div>
           <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
-            ✕
+            &times;
           </button>
         </div>
 

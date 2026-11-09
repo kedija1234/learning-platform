@@ -77,7 +77,7 @@ export default function InternshipDetail() {
     setSuccessMsg('');
     try {
       await apiClient.post(`/internships/${id}/apply`);
-      setSuccessMsg('🎉 Your application was submitted successfully!');
+      setSuccessMsg('Your application was submitted successfully!');
       fetchInternship();
     } catch (err) {
       setError(err.friendlyMessage || 'Failed to submit application');
@@ -157,94 +157,94 @@ export default function InternshipDetail() {
         ← Back to All Internships
       </Link>
 
-      <div className="internship-detail-card">
-        <div className="detail-header-row">
-          <div>
-            <span className="company-badge-lg">🏢 {internship.organization_name}</span>
-            <h1 className="detail-job-title">{internship.title}</h1>
-            <p className="detail-coordinator">
-              Posted by Coordinator: <strong>{internship.coordinator_first_name} {internship.coordinator_last_name}</strong> ({internship.coordinator_email})
-            </p>
-          </div>
-
-          <div className="deadline-box">
-            <span className="deadline-title">Application Deadline</span>
-            <p className={`deadline-val ${isPastDeadline ? 'deadline-expired' : ''}`}>
-              {internship.deadline ? new Date(internship.deadline).toLocaleDateString() : 'Rolling Admission'}
-            </p>
-            {isPastDeadline && <span className="deadline-status-pill">Closed</span>}
-            {isOwnerCoordinator && (
-              <button
-                type="button"
-                className="btn btn-xs btn-outline-danger"
-                style={{ marginTop: '0.75rem', width: '100%' }}
-                onClick={handleDeleteInternship}
-                disabled={deletingInternship}
-              >
-                {deletingInternship ? 'Deleting...' : '🗑 Delete Posting'}
-              </button>
-            )}
-          </div>
+      {/* Signature Deep-Teal Header Band */}
+      <div className="internship-detail-header">
+        <div className="internship-main-info">
+          <span className="company-badge-lg">{internship.organization_name}</span>
+          <h1 className="detail-job-title">{internship.title}</h1>
+          <p className="detail-coordinator">
+            Posted by Coordinator: <strong>{internship.coordinator_first_name} {internship.coordinator_last_name}</strong> ({internship.coordinator_email})
+          </p>
         </div>
 
-        {/* Application status banner if student */}
-        {isStudent && (
-          <div className="application-callout-box">
-            {hasApplied ? (
-              <div className="applied-info-banner">
-                <div className="applied-banner-text">
-                  <h3>Application Status:</h3>
-                  <span className={`status-pill status-${internship.my_application_status}`}>
-                    {internship.my_application_status === 'accepted'
-                      ? '🎉 Accepted'
-                      : internship.my_application_status === 'rejected'
-                      ? '✕ Application Rejected'
-                      : '⏳ Application Under Review (Pending)'}
-                  </span>
-                </div>
-                <p className="applied-note">
+        <div className="deadline-box">
+          <span className="deadline-title">Application Deadline</span>
+          <p className={`deadline-val ${isPastDeadline ? 'deadline-expired' : ''}`}>
+            {internship.deadline ? new Date(internship.deadline).toLocaleDateString() : 'Rolling Admission'}
+          </p>
+          {isPastDeadline && <span className="deadline-status-pill">Closed</span>}
+          {isOwnerCoordinator && (
+            <button
+              type="button"
+              className="btn btn-xs btn-outline-danger"
+              style={{ marginTop: '0.75rem', width: '100%' }}
+              onClick={handleDeleteInternship}
+              disabled={deletingInternship}
+            >
+              {deletingInternship ? 'Deleting...' : 'Delete Posting'}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Application status / Apply CTA for students */}
+      {isStudent && (
+        <div className="application-callout-box">
+          {hasApplied ? (
+            <div className="applied-info-banner">
+              <div className="applied-banner-text">
+                <h3>Application Status:</h3>
+                <span className={`status-pill status-${internship.my_application_status}`}>
                   {internship.my_application_status === 'accepted'
-                    ? 'Congratulations! The university internship coordinator has approved your application.'
+                    ? 'Accepted'
                     : internship.my_application_status === 'rejected'
-                    ? 'Thank you for your interest. You may apply for other open opportunities.'
-                    : 'Your application has been received and is being evaluated by the program coordinator.'}
-                </p>
+                    ? 'Application Rejected'
+                    : 'Application Under Review (Pending)'}
+                </span>
               </div>
-            ) : isPastDeadline ? (
-              <div className="alert alert-error">
-                ⛔ Applications for this internship opportunity have closed because the deadline has passed.
+              <p className="applied-note">
+                {internship.my_application_status === 'accepted'
+                  ? 'Congratulations! The university internship coordinator has approved your application.'
+                  : internship.my_application_status === 'rejected'
+                  ? 'Thank you for your interest. You may apply for other open opportunities.'
+                  : 'Your application has been received and is being evaluated by the program coordinator.'}
+              </p>
+            </div>
+          ) : isPastDeadline ? (
+            <div className="alert alert-error">
+              Applications for this internship opportunity have closed because the deadline has passed.
+            </div>
+          ) : (
+            <div className="apply-cta-banner">
+              <div>
+                <h3>Ready to apply?</h3>
+                <p>Submit your student profile and credentials directly to the coordinator.</p>
               </div>
-            ) : (
-              <div className="apply-cta-banner">
-                <div>
-                  <h3>Ready to apply?</h3>
-                  <p>Submit your student profile and credentials directly to the coordinator.</p>
-                </div>
-                {successMsg && <div className="alert alert-success">{successMsg}</div>}
-                {error && <div className="alert alert-error">{error}</div>}
-                <button
-                  onClick={handleApply}
-                  disabled={applying}
-                  className="btn btn-primary"
-                >
-                  {applying ? 'Submitting Application...' : 'Submit Application Now →'}
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Job Description Section */}
-        <div className="internship-description-section">
-          <h2>About the Position & Role Description</h2>
-          <div className="description-text-block">
-            {internship.description || 'No detailed description provided.'}
-          </div>
+              {successMsg && <div className="alert alert-success">{successMsg}</div>}
+              {error && <div className="alert alert-error">{error}</div>}
+              <button
+                onClick={handleApply}
+                disabled={applying}
+                className="btn btn-primary"
+              >
+                {applying ? 'Submitting Application...' : 'Submit Application Now →'}
+              </button>
+            </div>
+          )}
         </div>
+      )}
 
-        {/* Coordinator Applicant Review Section */}
-        {isOwnerCoordinator && (
-          <div className="applicant-review-section">
+      {/* Job Description Card */}
+      <div className="internship-description-card">
+        <h2>About the Position & Role Description</h2>
+        <div className="description-text-block">
+          {internship.description || 'No detailed description provided.'}
+        </div>
+      </div>
+
+      {/* Coordinator Applicant Review Card */}
+      {isOwnerCoordinator && (
+        <div className="applicant-review-card">
             <div className="applicant-review-header">
               <div>
                 <h2>Applicant Review & Decisions</h2>
@@ -312,7 +312,6 @@ export default function InternshipDetail() {
               </div>
             ) : applications.length === 0 ? (
               <div className="empty-state" style={{ margin: '1rem 0' }}>
-                <span className="empty-icon">👥</span>
                 <h4>No applicants found</h4>
                 <p>
                   {statusFilter
@@ -333,13 +332,13 @@ export default function InternshipDetail() {
                           </h4>
                           <span className={`status-pill status-${app.status}`}>
                             {app.status === 'accepted'
-                              ? '✓ Accepted'
+                              ? 'Accepted'
                               : app.status === 'rejected'
-                              ? '✕ Rejected'
-                              : '⏳ Pending'}
+                              ? 'Rejected'
+                              : 'Pending'}
                           </span>
                         </div>
-                        <p className="applicant-email">📧 {app.email}</p>
+                        <p className="applicant-email">{app.email}</p>
                         <p className="applicant-applied-time">
                           Applied on: {new Date(app.created_at).toLocaleString()}
                         </p>
@@ -353,7 +352,7 @@ export default function InternshipDetail() {
                             onClick={() => handleUpdateStatus(app.id, 'accepted')}
                             disabled={isUpdating}
                           >
-                            {isUpdating ? 'Updating...' : '✓ Accept'}
+                            {isUpdating ? 'Updating...' : 'Accept'}
                           </button>
                         )}
                         {app.status !== 'rejected' && (
@@ -363,7 +362,7 @@ export default function InternshipDetail() {
                             onClick={() => handleUpdateStatus(app.id, 'rejected')}
                             disabled={isUpdating}
                           >
-                            {isUpdating ? 'Updating...' : '✕ Reject'}
+                            {isUpdating ? 'Updating...' : 'Reject'}
                           </button>
                         )}
                       </div>
@@ -379,7 +378,6 @@ export default function InternshipDetail() {
             )}
           </div>
         )}
-      </div>
     </div>
   );
 }

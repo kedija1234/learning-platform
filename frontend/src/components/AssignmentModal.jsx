@@ -49,7 +49,7 @@ export default function AssignmentModal({ courseId, isOpen, onClose, onSuccess }
             <p className="modal-subtitle">Post a new assignment with submission instructions and deadlines</p>
           </div>
           <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
-            ✕
+            &times;
           </button>
         </div>
 

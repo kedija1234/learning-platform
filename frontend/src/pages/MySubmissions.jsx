@@ -53,10 +53,9 @@ export default function MySubmissions() {
         </div>
       ) : submissions.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-icon">📝</span>
           <h3>No submissions yet</h3>
           <p>You haven't submitted any coursework yet. Enroll in courses and submit assignments to see your grades here.</p>
-          <Link to="/courses" className="btn btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
+          <Link to="/courses" className="btn btn-outline" style={{ marginTop: '1rem', display: 'inline-block' }}>
             Browse Courses
           </Link>
         </div>
@@ -84,7 +83,7 @@ export default function MySubmissions() {
                           <span className="score-max">/ 100</span>
                         </div>
                       ) : (
-                        <span className="pending-grade-pill">⏳ Pending Grade</span>
+                        <span className="pending-grade-pill">Pending Grade</span>
                       )}
                     </div>
                   </div>

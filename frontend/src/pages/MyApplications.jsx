@@ -53,10 +53,9 @@ export default function MyApplications() {
         </div>
       ) : applications.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-icon">📂</span>
           <h3>No applications submitted</h3>
           <p>You haven't applied for any internships yet. Browse available postings and submit applications.</p>
-          <Link to="/internships" className="btn btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
+          <Link to="/internships" className="btn btn-outline" style={{ marginTop: '1rem', display: 'inline-block' }}>
             Explore Internships
           </Link>
         </div>
@@ -66,7 +65,7 @@ export default function MyApplications() {
             {applications.map((app) => (
               <div key={app.id} className="application-item-card">
                 <div className="app-main-info">
-                  <span className="company-badge">🏢 {app.organization_name}</span>
+                  <span className="company-badge">{app.organization_name}</span>
                   <h3 className="app-job-title">{app.internship_title}</h3>
                   <p className="app-coordinator">
                     Coordinator: {app.coordinator_first_name} {app.coordinator_last_name}
@@ -79,12 +78,12 @@ export default function MyApplications() {
                 <div className="app-status-box">
                   <span className={`status-pill status-${app.status}`}>
                     {app.status === 'accepted'
-                      ? '✓ Accepted'
+                      ? 'Accepted'
                       : app.status === 'rejected'
-                      ? '✕ Rejected'
-                      : '⏳ Pending Review'}
+                      ? 'Rejected'
+                      : 'Pending Review'}
                   </span>
-                  <Link to={`/internships/${app.internship_id}`} className="btn btn-sm btn-outline" style={{ marginTop: '0.5rem' }}>
+                  <Link to={`/internships/${app.internship_id}`} className="btn btn-sm btn-outline">
                     View Posting →
                   </Link>
                 </div>

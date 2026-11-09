@@ -56,7 +56,7 @@ export default function InternshipsList() {
     setActionSuccess('');
     try {
       await apiClient.post(`/internships/${internshipId}/apply`);
-      setActionSuccess(`🎉 Successfully applied for "${title}"!`);
+      setActionSuccess(`Successfully applied for "${title}"!`);
       fetchInternships(page, search);
     } catch (err) {
       setError(err.friendlyMessage || 'Failed to apply for internship');
@@ -93,7 +93,7 @@ export default function InternshipsList() {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-outline">
           Search
         </button>
         {search && (
@@ -111,7 +111,6 @@ export default function InternshipsList() {
         </div>
       ) : internships.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-icon">💼</span>
           <h3>No internship opportunities found</h3>
           <p>{search ? `No listings matching "${search}".` : 'There are currently no active internship postings.'}</p>
           {search && (
@@ -131,10 +130,10 @@ export default function InternshipsList() {
                 <div key={item.id} className="internship-card">
                   <div className="internship-card-body">
                     <div className="internship-card-header">
-                      <span className="company-badge">🏢 {item.organization_name}</span>
+                      <span className="company-badge">{item.organization_name}</span>
                       {hasApplied && (
                         <span className={`status-pill status-${item.my_application_status}`}>
-                          {item.my_application_status === 'accepted' ? '✓ Accepted' : item.my_application_status === 'rejected' ? '✕ Rejected' : 'Applied (Pending)'}
+                          {item.my_application_status === 'accepted' ? 'Accepted' : item.my_application_status === 'rejected' ? 'Rejected' : 'Applied (Pending)'}
                         </span>
                       )}
                     </div>
@@ -148,12 +147,12 @@ export default function InternshipsList() {
                     <div className="internship-meta">
                       {item.deadline ? (
                         <span className={`deadline-tag ${isPastDeadline ? 'deadline-expired' : ''}`}>
-                          {isPastDeadline ? '⛔ Deadline Passed' : `⏰ Deadline: ${new Date(item.deadline).toLocaleDateString()}`}
+                          {isPastDeadline ? 'Deadline Passed' : `Deadline: ${new Date(item.deadline).toLocaleDateString()}`}
                         </span>
                       ) : (
                         <span className="deadline-tag">Rolling Admissions</span>
                       )}
-                      <span className="applicant-count">👥 {item.application_count || 0} Applicants</span>
+                      <span className="applicant-count">{item.application_count || 0} Applicants</span>
                     </div>
                   </div>
 

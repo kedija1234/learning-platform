@@ -27,7 +27,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
           Your account role (<strong>{user.role}</strong>) does not have permission to access this page.
         </p>
         <p>Required role: {allowedRoles.join(' or ')}</p>
-        <a href="/" className="btn btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
+        <a href="/" className="btn btn-outline" style={{ marginTop: '1rem', display: 'inline-block' }}>
           Back to Dashboard
         </a>
       </div>

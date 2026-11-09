@@ -86,7 +86,7 @@ export default function GradeSubmissionsModal({ assignment, courseId, isOpen, on
             <p className="modal-subtitle">Review student solutions and submit grades and feedback</p>
           </div>
           <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
-            ✕
+            &times;
           </button>
         </div>
 
@@ -100,7 +100,6 @@ export default function GradeSubmissionsModal({ assignment, courseId, isOpen, on
             </div>
           ) : submissions.length === 0 ? (
             <div className="empty-state">
-              <span className="empty-icon">📂</span>
               <h4>No submissions received yet</h4>
               <p>Enrolled students have not submitted solutions for this assignment yet.</p>
             </div>
@@ -182,7 +181,7 @@ export default function GradeSubmissionsModal({ assignment, courseId, isOpen, on
                           {savingId === sub.id ? 'Saving...' : isGraded ? 'Update Grade' : 'Save Grade'}
                         </button>
                         {saveSuccessId === sub.id && (
-                          <span className="save-success-tag">✓ Saved & Notified</span>
+                          <span className="save-success-tag">Saved & Notified</span>
                         )}
                       </div>
                     </div>
@@ -193,6 +192,12 @@ export default function GradeSubmissionsModal({ assignment, courseId, isOpen, on
               <Pagination pagination={pagination} onPageChange={(newPage) => setPage(newPage)} />
             </div>
           )}
+
+          <div className="modal-actions">
+            <button type="button" className="btn btn-outline" onClick={onClose}>
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -85,7 +85,7 @@ export default function SubmissionModal({ assignment, courseId, isOpen, onClose,
             <p className="modal-subtitle">Course Assignment</p>
           </div>
           <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
-            ✕
+            &times;
           </button>
         </div>
 
@@ -96,7 +96,7 @@ export default function SubmissionModal({ assignment, courseId, isOpen, onClose,
             <p>{assignment.instructions || 'No detailed instructions provided.'}</p>
             {assignment.due_date && (
               <p className="due-date-notice">
-                ⏰ Due Date: {new Date(assignment.due_date).toLocaleString()}
+                Due Date: {new Date(assignment.due_date).toLocaleString()}
               </p>
             )}
           </div>
@@ -134,12 +134,12 @@ export default function SubmissionModal({ assignment, courseId, isOpen, onClose,
                   </div>
 
                   <p className="grade-lock-note">
-                    🔒 This submission has been graded and is locked from further edits.
+                    This submission has been graded and is locked from further edits.
                   </p>
                 </div>
               ) : (
                 /* Editable / New Submission Form */
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="standard-form">
                   <div className="form-group">
                     <label htmlFor="submission_content">
                       {existingSubmission ? 'Update Your Submission:' : 'Your Answer / Solution:'}
@@ -158,7 +158,7 @@ export default function SubmissionModal({ assignment, courseId, isOpen, onClose,
 
                   {existingSubmission && !isGraded && (
                     <p className="info-note">
-                      ℹ️ You previously submitted on{' '}
+                      Note: You previously submitted on{' '}
                       {new Date(existingSubmission.submitted_at).toLocaleDateString()}. You can
                       update your submission until your instructor grades it.
                     </p>

@@ -50,7 +50,7 @@ export default function CourseDetail() {
     setError('');
     try {
       await apiClient.post(`/courses/${id}/enroll`);
-      setEnrollSuccess('🎉 Successfully enrolled in this course!');
+      setEnrollSuccess('Successfully enrolled in this course!');
       fetchCourse();
     } catch (err) {
       setError(err.friendlyMessage || 'Failed to enroll in course');
@@ -153,7 +153,7 @@ export default function CourseDetail() {
             <h3>Your Enrollment</h3>
             {isEnrolled ? (
               <div className="enrolled-status-content">
-                <div className="status-pill status-enrolled">✓ Enrolled</div>
+                <div className="status-pill status-enrolled">Enrolled</div>
                 <div className="progress-section">
                   <div className="progress-labels">
                     <span>Course Progress</span>
@@ -211,7 +211,7 @@ export default function CourseDetail() {
                 onClick={handleDeleteCourse}
                 disabled={deletingCourse}
               >
-                {deletingCourse ? 'Deleting Course...' : '🗑 Delete Course'}
+                {deletingCourse ? 'Deleting Course...' : 'Delete Course'}
               </button>
             </div>
           </div>
@@ -243,7 +243,6 @@ export default function CourseDetail() {
                 const isUrl = res.link_or_text?.startsWith('http://') || res.link_or_text?.startsWith('https://');
                 return (
                   <div key={res.id} className="resource-item">
-                    <div className="resource-icon">🔗</div>
                     <div className="resource-details" style={{ flex: 1 }}>
                       <h4>{res.title}</h4>
                       {isUrl ? (
@@ -261,7 +260,7 @@ export default function CourseDetail() {
                         title="Delete resource"
                         onClick={() => handleDeleteResource(res.id, res.title)}
                       >
-                        ✕
+                        Delete
                       </button>
                     )}
                   </div>
@@ -330,7 +329,7 @@ export default function CourseDetail() {
                           Submit or View Work →
                         </button>
                       ) : (
-                        <span className="locked-note">🔒 Enroll to submit</span>
+                        <span className="locked-note">Enroll to submit</span>
                       )
                     ) : isOwnerMentor ? (
                       <div className="mentor-assignment-actions">
@@ -339,7 +338,7 @@ export default function CourseDetail() {
                           className="btn btn-sm btn-primary"
                           onClick={() => setGradingAssignment(assignment)}
                         >
-                          📝 Review & Grade Submissions
+                          Review & Grade Submissions
                         </button>
                         <button
                           type="button"
@@ -347,7 +346,7 @@ export default function CourseDetail() {
                           title="Delete assignment"
                           onClick={() => handleDeleteAssignment(assignment.id, assignment.title)}
                         >
-                          🗑
+                          Delete
                         </button>
                       </div>
                     ) : (
