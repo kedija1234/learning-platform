@@ -3899,4 +3899,282 @@ pre.solution-text {
   }
 }
 
+/* ==========================================================================
+   Motion & Polish Suite (Flat, Calm, Respects Reduced Motion)
+   ========================================================================== */
+
+/* 5. Visible keyboard focus outline on every button and link */
+button:focus-visible,
+a:focus-visible,
+.btn:focus-visible,
+.nav-link:focus-visible,
+.mobile-toggle:focus-visible,
+.mobile-notif-btn:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--deep-teal) !important;
+  outline-offset: 2px !important;
+}
+
+/* 6. Cards on Courses, Internships and Dashboard: hover move up 2px, border teal, 150ms */
+.course-card,
+.internship-card,
+.action-card {
+  transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.course-card:hover,
+.internship-card:hover,
+.action-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--teal);
+}
+
+/* 7. Buttons: color change on hover, on press scale to 0.98 for 100ms */
+.btn {
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+  transition: transform 100ms ease;
+}
+
+/* 8. List items appear with a stagger: opacity 0 to 1 and 8px upward slide, 40ms delay, max 8 items */
+@keyframes staggerItemSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.course-card:not(.skeleton-card),
+.internship-card:not(.skeleton-card),
+.action-card:not(.skeleton-card),
+.application-item-card,
+.submission-card,
+.notification-item,
+.stagger-item {
+  animation: staggerItemSlideIn 200ms ease forwards;
+}
+
+.course-card:nth-child(1),
+.internship-card:nth-child(1),
+.action-card:nth-child(1),
+.application-item-card:nth-child(1),
+.submission-card:nth-child(1),
+.notification-item:nth-child(1),
+.stagger-item:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.course-card:nth-child(2),
+.internship-card:nth-child(2),
+.action-card:nth-child(2),
+.application-item-card:nth-child(2),
+.submission-card:nth-child(2),
+.notification-item:nth-child(2),
+.stagger-item:nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.course-card:nth-child(3),
+.internship-card:nth-child(3),
+.action-card:nth-child(3),
+.application-item-card:nth-child(3),
+.submission-card:nth-child(3),
+.notification-item:nth-child(3),
+.stagger-item:nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.course-card:nth-child(4),
+.internship-card:nth-child(4),
+.action-card:nth-child(4),
+.application-item-card:nth-child(4),
+.submission-card:nth-child(4),
+.notification-item:nth-child(4),
+.stagger-item:nth-child(4) {
+  animation-delay: 120ms;
+}
+
+.course-card:nth-child(5),
+.internship-card:nth-child(5),
+.action-card:nth-child(5),
+.application-item-card:nth-child(5),
+.submission-card:nth-child(5),
+.notification-item:nth-child(5),
+.stagger-item:nth-child(5) {
+  animation-delay: 160ms;
+}
+
+.course-card:nth-child(6),
+.internship-card:nth-child(6),
+.action-card:nth-child(6),
+.application-item-card:nth-child(6),
+.submission-card:nth-child(6),
+.notification-item:nth-child(6),
+.stagger-item:nth-child(6) {
+  animation-delay: 200ms;
+}
+
+.course-card:nth-child(7),
+.internship-card:nth-child(7),
+.action-card:nth-child(7),
+.application-item-card:nth-child(7),
+.submission-card:nth-child(7),
+.notification-item:nth-child(7),
+.stagger-item:nth-child(7) {
+  animation-delay: 240ms;
+}
+
+.course-card:nth-child(8),
+.internship-card:nth-child(8),
+.action-card:nth-child(8),
+.application-item-card:nth-child(8),
+.submission-card:nth-child(8),
+.notification-item:nth-child(8),
+.stagger-item:nth-child(8) {
+  animation-delay: 280ms;
+}
+
+/* 9. Page content fades in over 200ms. Modals fade and slide in over 150ms */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page-wrapper,
+.dashboard-container,
+.main-content {
+  animation: pageFadeIn 200ms ease forwards;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-backdrop {
+  animation: modalFadeIn 150ms ease forwards;
+}
+
+.modal-card {
+  animation: modalSlideIn 150ms ease forwards;
+}
+
+/* 10. Sidebar links: smooth background color transition on hover */
+.nav-link,
+.sidebar-nav a {
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+/* 1. Loading Skeletons: plain flat gray blocks */
+.skeleton-card {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-sizing: border-box;
+}
+
+.skeleton-block {
+  background-color: #e2e8f0;
+  border-radius: 4px;
+}
+
+.skeleton-badge {
+  width: 70px;
+  height: 18px;
+}
+
+.skeleton-title {
+  width: 75%;
+  height: 22px;
+}
+
+.skeleton-line {
+  width: 100%;
+  height: 14px;
+}
+
+.skeleton-line-short {
+  width: 60%;
+  height: 14px;
+}
+
+.skeleton-btn {
+  width: 100%;
+  height: 34px;
+  margin-top: 0.5rem;
+}
+
+/* 11. prefers-reduced-motion media query disables all animations and transitions */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .course-card:hover,
+  .internship-card:hover,
+  .action-card:hover {
+    transform: none !important;
+  }
+
+  .btn:active {
+    transform: none !important;
+  }
+
+  .page-wrapper,
+  .dashboard-container,
+  .main-content,
+  .modal-backdrop,
+  .modal-card,
+  .course-card,
+  .internship-card,
+  .action-card,
+  .application-item-card,
+  .submission-card,
+  .notification-item,
+  .stagger-item {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+
 

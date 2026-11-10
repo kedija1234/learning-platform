@@ -117,8 +117,16 @@ export default function Notifications() {
         </div>
       ) : notifications.length === 0 ? (
         <div className="empty-state">
-          <h3>No notifications</h3>
           <p>{unreadOnly ? 'You have no unread notifications.' : 'You do not have any notifications at this time.'}</p>
+          {unreadOnly ? (
+            <button className="btn btn-outline btn-sm" onClick={() => setUnreadOnly(false)} style={{ marginTop: '0.75rem' }}>
+              Show All Notifications
+            </button>
+          ) : (
+            <button className="btn btn-outline btn-sm" onClick={() => fetchNotifications(1, false)} style={{ marginTop: '0.75rem' }}>
+              Check for Updates
+            </button>
+          )}
         </div>
       ) : (
         <>

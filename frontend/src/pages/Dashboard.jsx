@@ -5,6 +5,27 @@ import { useAuth } from '../context/AuthContext';
 export default function Dashboard() {
   const { user } = useAuth();
 
+  if (!user) {
+    return (
+      <div className="dashboard-container">
+        <div className="skeleton-card" style={{ height: '110px' }}>
+          <div className="skeleton-block skeleton-title" style={{ width: '35%' }}></div>
+          <div className="skeleton-block skeleton-line" style={{ width: '55%' }}></div>
+        </div>
+        <div className="action-cards-grid">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="action-card skeleton-card">
+              <div className="skeleton-block skeleton-title"></div>
+              <div className="skeleton-block skeleton-line"></div>
+              <div className="skeleton-block skeleton-line-short"></div>
+              <div className="skeleton-block skeleton-btn"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-container">
       {/* Header Band */}

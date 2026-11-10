@@ -53,9 +53,8 @@ export default function MySubmissions() {
         </div>
       ) : submissions.length === 0 ? (
         <div className="empty-state">
-          <h3>No submissions yet</h3>
-          <p>You haven't submitted any coursework yet. Enroll in courses and submit assignments to see your grades here.</p>
-          <Link to="/courses" className="btn btn-outline" style={{ marginTop: '1rem', display: 'inline-block' }}>
+          <p>You have not submitted any coursework assignments yet.</p>
+          <Link to="/courses" className="btn btn-outline btn-sm" style={{ marginTop: '0.75rem', display: 'inline-block' }}>
             Browse Courses
           </Link>
         </div>

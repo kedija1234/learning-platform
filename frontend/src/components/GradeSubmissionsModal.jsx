@@ -92,6 +92,7 @@ export default function GradeSubmissionsModal({ assignment, courseId, isOpen, on
 
         <div className="modal-body">
           {error && <div className="alert alert-error">{error}</div>}
+          {saveSuccessId && <div className="alert alert-success">Grade saved successfully.</div>}
 
           {loading ? (
             <div className="modal-loading">
@@ -100,8 +101,15 @@ export default function GradeSubmissionsModal({ assignment, courseId, isOpen, on
             </div>
           ) : submissions.length === 0 ? (
             <div className="empty-state">
-              <h4>No submissions received yet</h4>
-              <p>Enrolled students have not submitted solutions for this assignment yet.</p>
+              <p>No student submissions have been received for this assignment yet.</p>
+              <button
+                type="button"
+                className="btn btn-outline btn-sm"
+                onClick={() => fetchSubmissions(1)}
+                style={{ marginTop: '0.75rem' }}
+              >
+                Refresh Submissions
+              </button>
             </div>
           ) : (
             <div className="submissions-grading-list">

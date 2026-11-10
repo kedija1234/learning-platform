@@ -93,17 +93,31 @@ export default function CoursesList() {
 
       {/* Loading State */}
       {loading ? (
-        <div className="loading-screen">
-          <div className="spinner"></div>
-          <p>Loading course catalog...</p>
+        <div className="cards-grid">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="course-card skeleton-card">
+              <div className="skeleton-block skeleton-badge"></div>
+              <div className="skeleton-block skeleton-title"></div>
+              <div className="skeleton-block skeleton-line"></div>
+              <div className="skeleton-block skeleton-line-short"></div>
+              <div className="skeleton-block skeleton-btn"></div>
+            </div>
+          ))}
         </div>
       ) : courses.length === 0 ? (
         <div className="empty-state">
-          <h3>No courses found</h3>
-          <p>{search ? `No courses matching "${search}". Try different keywords.` : 'There are currently no published courses.'}</p>
-          {search && (
-            <button className="btn btn-outline btn-sm" onClick={handleClearSearch} style={{ marginTop: '1rem' }}>
-              Reset Search
+          <p>{search ? 'No courses match your search criteria.' : 'There are currently no published courses available.'}</p>
+          {search ? (
+            <button type="button" className="btn btn-outline btn-sm" onClick={handleClearSearch} style={{ marginTop: '0.75rem' }}>
+              Clear Search
+            </button>
+          ) : (user?.role === 'mentor' || user?.role === 'admin') ? (
+            <Link to="/courses/new" className="btn btn-primary btn-sm" style={{ marginTop: '0.75rem' }}>
+              Create New Course
+            </Link>
+          ) : (
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => fetchCourses(1, '')} style={{ marginTop: '0.75rem' }}>
+              Refresh Courses
             </button>
           )}
         </div>

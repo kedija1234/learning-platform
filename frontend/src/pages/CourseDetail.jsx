@@ -137,6 +137,9 @@ export default function CourseDetail() {
         ← Back to All Courses
       </Link>
 
+      {enrollSuccess && <div className="alert alert-success">{enrollSuccess}</div>}
+      {actionSuccess && <div className="alert alert-success">{actionSuccess}</div>}
+
       <div className="course-detail-header courses-header">
         <div className="course-main-info">
           <span className="category-badge">{course.category || 'General'}</span>
@@ -270,7 +273,7 @@ export default function CourseDetail() {
           ) : (
             <div className="empty-subtext-container">
               <p className="empty-subtext">No reference materials published yet.</p>
-              {isOwnerMentor && (
+              {isOwnerMentor ? (
                 <button
                   type="button"
                   className="btn btn-sm btn-outline"
@@ -278,6 +281,15 @@ export default function CourseDetail() {
                   onClick={() => setActiveResourceModal(true)}
                 >
                   + Add First Resource
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline"
+                  style={{ marginTop: '0.5rem' }}
+                  onClick={fetchCourse}
+                >
+                  Refresh Resources
                 </button>
               )}
             </div>
@@ -359,7 +371,7 @@ export default function CourseDetail() {
           ) : (
             <div className="empty-subtext-container">
               <p className="empty-subtext">No assignments posted for this course yet.</p>
-              {isOwnerMentor && (
+              {isOwnerMentor ? (
                 <button
                   type="button"
                   className="btn btn-sm btn-outline"
@@ -367,6 +379,15 @@ export default function CourseDetail() {
                   onClick={() => setActiveAssignmentModal(true)}
                 >
                   + Add First Assignment
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline"
+                  style={{ marginTop: '0.5rem' }}
+                  onClick={fetchCourse}
+                >
+                  Refresh Assignments
                 </button>
               )}
             </div>
@@ -381,7 +402,10 @@ export default function CourseDetail() {
           courseId={course.id}
           isOpen={!!activeAssignment}
           onClose={() => setActiveAssignment(null)}
-          onSuccess={fetchCourse}
+          onSuccess={() => {
+            setActionSuccess('Assignment submitted successfully.');
+            fetchCourse();
+          }}
         />
       )}
 
@@ -412,7 +436,10 @@ export default function CourseDetail() {
           courseId={course.id}
           isOpen={!!gradingAssignment}
           onClose={() => setGradingAssignment(null)}
-          onGraded={fetchCourse}
+          onGraded={() => {
+            setActionSuccess('Grade saved successfully.');
+            fetchCourse();
+          }}
         />
       )}
     </div>

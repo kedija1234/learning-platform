@@ -53,9 +53,8 @@ export default function MyApplications() {
         </div>
       ) : applications.length === 0 ? (
         <div className="empty-state">
-          <h3>No applications submitted</h3>
-          <p>You haven't applied for any internships yet. Browse available postings and submit applications.</p>
-          <Link to="/internships" className="btn btn-outline" style={{ marginTop: '1rem', display: 'inline-block' }}>
+          <p>You have not submitted any internship applications yet.</p>
+          <Link to="/internships" className="btn btn-outline btn-sm" style={{ marginTop: '0.75rem', display: 'inline-block' }}>
             Explore Internships
           </Link>
         </div>

@@ -87,6 +87,11 @@ export default function InternshipDetail() {
   };
 
   const handleUpdateStatus = async (applicationId, newStatus) => {
+    if (newStatus === 'rejected') {
+      if (!window.confirm('Are you sure you want to reject this applicant?')) {
+        return;
+      }
+    }
     setUpdatingAppId(applicationId);
     setCoordinatorActionError('');
     setCoordinatorActionSuccess('');
@@ -156,6 +161,8 @@ export default function InternshipDetail() {
       <Link to="/internships" className="back-link">
         ← Back to All Internships
       </Link>
+
+      {successMsg && <div className="alert alert-success">{successMsg}</div>}
 
       {/* Signature Deep-Teal Header Band */}
       <div className="internship-detail-header internships-header">
@@ -312,12 +319,33 @@ export default function InternshipDetail() {
               </div>
             ) : applications.length === 0 ? (
               <div className="empty-state" style={{ margin: '1rem 0' }}>
-                <h4>No applicants found</h4>
                 <p>
                   {statusFilter
-                    ? `No applications with "${statusFilter}" status.`
-                    : 'No students have applied to this internship posting yet.'}
+                    ? `No applications found with "${statusFilter}" status.`
+                    : 'No candidates have applied to this internship posting yet.'}
                 </p>
+                {statusFilter ? (
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-sm"
+                    onClick={() => {
+                      setStatusFilter('');
+                      setAppPage(1);
+                    }}
+                    style={{ marginTop: '0.75rem' }}
+                  >
+                    Show All Applicants
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-sm"
+                    onClick={() => fetchApplications(1, '')}
+                    style={{ marginTop: '0.75rem' }}
+                  >
+                    Refresh Applicants
+                  </button>
+                )}
               </div>
             ) : (
               <div className="applicants-list">

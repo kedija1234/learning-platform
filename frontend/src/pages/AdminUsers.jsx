@@ -180,8 +180,7 @@ export default function AdminUsers() {
         </div>
       ) : users.length === 0 ? (
         <div className="empty-state">
-          <h3>No users match your criteria</h3>
-          <p>Try modifying your search query or reset the filters.</p>
+          <p>No user accounts matched your search and filter criteria.</p>
           <button className="btn btn-outline btn-sm" onClick={handleClearFilters} style={{ marginTop: '0.75rem' }}>
             Reset Filters
           </button>

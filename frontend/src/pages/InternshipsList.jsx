@@ -105,17 +105,31 @@ export default function InternshipsList() {
 
       {/* Loading State */}
       {loading ? (
-        <div className="loading-screen">
-          <div className="spinner"></div>
-          <p>Loading opportunities...</p>
+        <div className="cards-grid">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="internship-card skeleton-card">
+              <div className="skeleton-block skeleton-badge"></div>
+              <div className="skeleton-block skeleton-title"></div>
+              <div className="skeleton-block skeleton-line"></div>
+              <div className="skeleton-block skeleton-line-short"></div>
+              <div className="skeleton-block skeleton-btn"></div>
+            </div>
+          ))}
         </div>
       ) : internships.length === 0 ? (
         <div className="empty-state">
-          <h3>No internship opportunities found</h3>
-          <p>{search ? `No listings matching "${search}".` : 'There are currently no active internship postings.'}</p>
-          {search && (
-            <button className="btn btn-outline btn-sm" onClick={handleClearSearch} style={{ marginTop: '1rem' }}>
-              Reset Search
+          <p>{search ? 'No internship opportunities match your search criteria.' : 'There are currently no active internship postings available.'}</p>
+          {search ? (
+            <button type="button" className="btn btn-outline btn-sm" onClick={handleClearSearch} style={{ marginTop: '0.75rem' }}>
+              Clear Search
+            </button>
+          ) : (user?.role === 'coordinator' || user?.role === 'admin') ? (
+            <Link to="/internships/new" className="btn btn-primary btn-sm" style={{ marginTop: '0.75rem' }}>
+              Post New Internship
+            </Link>
+          ) : (
+            <button type="button" className="btn btn-outline btn-sm" onClick={() => fetchInternships(1, '')} style={{ marginTop: '0.75rem' }}>
+              Refresh Internships
             </button>
           )}
         </div>
