@@ -8,7 +8,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard-container">
       {/* Header Band */}
-      <div className="dashboard-hero">
+      <div className="dashboard-hero dashboard-header">
         <div className="hero-text">
           <h1>{user?.first_name} {user?.last_name}</h1>
           <p className="hero-subtitle">

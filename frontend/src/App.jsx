@@ -18,12 +18,40 @@ import Notifications from './pages/Notifications';
 import AdminUsers from './pages/AdminUsers';
 import AdminStats from './pages/AdminStats';
 import NotFound from './pages/NotFound';
+import Landing from './pages/Landing';
+import { useAuth } from './context/AuthContext';
+
+function HomeRoute() {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+        <p>Loading application...</p>
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return (
+      <Layout>
+        <Dashboard />
+      </Layout>
+    );
+  }
+
+  return <Landing />;
+}
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Landing page for visitors, Dashboard for logged-in users */}
+          <Route path="/" element={<HomeRoute />} />
+
           {/* Public Authentication Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -36,7 +64,6 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/" element={<Dashboard />} />
 
             {/* Courses Screens */}
             <Route path="/courses" element={<CoursesList />} />

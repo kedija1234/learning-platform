@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="100%" height="100%">
+  <!-- Background Base -->
+  <rect width="1200" height="400" fill="#0F766E"/>
+
+  <!-- Architectural Horizon & Perspective Grid Lines -->
+  <g stroke="#0D9488" stroke-width="1" opacity="0.35">
+    <line x1="0" y1="340" x2="1200" y2="340"/>
+    <line x1="0" y1="300" x2="1200" y2="300"/>
+    <line x1="0" y1="260" x2="1200" y2="260"/>
+    <line x1="0" y1="220" x2="1200" y2="220"/>
+    <line x1="600" y1="220" x2="0" y2="400"/>
+    <line x1="600" y1="220" x2="200" y2="400"/>
+    <line x1="600" y1="220" x2="400" y2="400"/>
+    <line x1="600" y1="220" x2="800" y2="400"/>
+    <line x1="600" y1="220" x2="1000" y2="400"/>
+    <line x1="600" y1="220" x2="1200" y2="400"/>
+  </g>
+
+  <!-- Left Side Architecture (Terraces & Colonnade) -->
+  <g opacity="0.75">
+    <rect x="80" y="200" width="120" height="140" fill="#0D9488"/>
+    <rect x="110" y="160" width="60" height="40" fill="#FAF8F3" opacity="0.9"/>
+    <!-- Colonnade Columns -->
+    <line x1="95" y1="220" x2="95" y2="320" stroke="#E6FFFA" stroke-width="2"/>
+    <line x1="120" y1="220" x2="120" y2="320" stroke="#E6FFFA" stroke-width="2"/>
+    <line x1="145" y1="220" x2="145" y2="320" stroke="#E6FFFA" stroke-width="2"/>
+    <line x1="170" y1="220" x2="170" y2="320" stroke="#E6FFFA" stroke-width="2"/>
+    <!-- Amber Beacon on Tower -->
+    <circle cx="140" cy="150" r="5" fill="#F59E0B"/>
+  </g>
+
+  <!-- Central Pathway leading to Career Horizon -->
+  <polygon points="540,340 660,340 620,230 580,230" fill="#FAF8F3" opacity="0.85"/>
+  <polygon points="565,340 635,340 610,230 590,230" fill="#E6FFFA" opacity="0.6"/>
+  <!-- Stepping Waypoints on Path -->
+  <circle cx="600" cy="245" r="4" fill="#F59E0B"/>
+  <circle cx="600" cy="275" r="5" fill="#0F766E"/>
+  <circle cx="600" cy="310" r="6" fill="#0D9488"/>
+
+  <!-- Right Side Skyline (Modern Corporate Towers & Bridges) -->
+  <g>
+    <!-- Tower 1 (Tall Modern Tower) -->
+    <rect x="960" y="80" width="85" height="260" fill="#0D9488"/>
+    <!-- Window Grid on Tower 1 -->
+    <g fill="#FAF8F3" opacity="0.8">
+      <rect x="975" y="105" width="12" height="16" rx="1"/>
+      <rect x="995" y="105" width="12" height="16" rx="1"/>
+      <rect x="1015" y="105" width="12" height="16" rx="1"/>
+
+      <rect x="975" y="135" width="12" height="16" rx="1"/>
+      <rect x="995" y="135" width="12" height="16" rx="1"/>
+      <rect x="1015" y="135" width="12" height="16" rx="1"/>
+
+      <rect x="975" y="165" width="12" height="16" rx="1"/>
+      <rect x="995" y="165" width="12" height="16" rx="1"/>
+      <rect x="1015" y="165" width="12" height="16" rx="1"/>
+
+      <rect x="975" y="195" width="12" height="16" rx="1"/>
+      <rect x="995" y="195" width="12" height="16" rx="1"/>
+      <rect x="1015" y="195" width="12" height="16" rx="1"/>
+    </g>
+    <rect x="998" y="60" width="8" height="20" fill="#F59E0B"/>
+
+    <!-- Tower 2 (Stepped Headquarters) -->
+    <rect x="850" y="140" width="95" height="200" fill="#FAF8F3" opacity="0.95"/>
+    <rect x="870" y="110" width="55" height="30" fill="#FAF8F3" opacity="0.95"/>
+    <!-- Vertical Mullions -->
+    <g stroke="#0D9488" stroke-width="1.5" opacity="0.7">
+      <line x1="875" y1="150" x2="875" y2="330"/>
+      <line x1="895" y1="150" x2="895" y2="330"/>
+      <line x1="915" y1="150" x2="915" y2="330"/>
+    </g>
+    <!-- Amber Entrance Canopy -->
+    <rect x="880" y="315" width="35" height="25" fill="#F59E0B"/>
+
+    <!-- Tower 3 (Background Angular Tower) -->
+    <polygon points="1060,150 1140,110 1140,340 1060,340" fill="#E6FFFA" opacity="0.75"/>
+    <line x1="1060" y1="150" x2="1140" y2="110" stroke="#0D9488" stroke-width="2"/>
+
+    <!-- Connecting Skybridge -->
+    <rect x="930" y="210" width="40" height="14" fill="#E6FFFA"/>
+    <line x1="930" y1="210" x2="970" y2="210" stroke="#0F766E" stroke-width="1.5"/>
+    <line x1="930" y1="224" x2="970" y2="224" stroke="#0F766E" stroke-width="1.5"/>
+  </g>
+
+  <!-- Ascending Structural Career Arc -->
+  <path d="M 400 350 C 550 260, 720 180, 850 120" fill="none" stroke="#FAF8F3" stroke-width="2.5" opacity="0.7"/>
+  <path d="M 420 365 C 570 275, 740 195, 860 135" fill="none" stroke="#E6FFFA" stroke-width="1" opacity="0.5"/>
+
+  <!-- Compass / Coordinate Axis at Center -->
+  <circle cx="600" cy="140" r="45" fill="none" stroke="#0D9488" stroke-width="1" stroke-dasharray="4,4" opacity="0.6"/>
+  <line x1="600" y1="85" x2="600" y2="195" stroke="#0D9488" stroke-width="1" opacity="0.4"/>
+  <line x1="545" y1="140" x2="655" y2="140" stroke="#0D9488" stroke-width="1" opacity="0.4"/>
+  <circle cx="600" cy="140" r="4" fill="#F59E0B"/>
+</svg>

@@ -69,7 +69,7 @@ export default function InternshipsList() {
 
   return (
     <div className="page-wrapper">
-      <div className="page-header">
+      <div className="page-header internships-header">
         <div>
           <h1>Internship Opportunities</h1>
           <p className="page-subtitle">Discover positions at corporate partners and submit applications</p>

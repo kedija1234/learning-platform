@@ -50,7 +50,7 @@ export default function CoursesList() {
 
   return (
     <div className="page-wrapper">
-      <div className="page-header">
+      <div className="page-header courses-header">
         <div>
           <h1>Course Catalog</h1>
           <p className="page-subtitle">Discover university courses, explore curriculums, and enroll</p>

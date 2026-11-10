@@ -158,7 +158,7 @@ export default function InternshipDetail() {
       </Link>
 
       {/* Signature Deep-Teal Header Band */}
-      <div className="internship-detail-header">
+      <div className="internship-detail-header internships-header">
         <div className="internship-main-info">
           <span className="company-badge-lg">{internship.organization_name}</span>
           <h1 className="detail-job-title">{internship.title}</h1>

@@ -137,7 +137,7 @@ export default function CourseDetail() {
         ← Back to All Courses
       </Link>
 
-      <div className="course-detail-header">
+      <div className="course-detail-header courses-header">
         <div className="course-main-info">
           <span className="category-badge">{course.category || 'General'}</span>
           <h1>{course.title}</h1>
