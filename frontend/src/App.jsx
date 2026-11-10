@@ -17,6 +17,7 @@ import MySubmissions from './pages/MySubmissions';
 import Notifications from './pages/Notifications';
 import AdminUsers from './pages/AdminUsers';
 import AdminStats from './pages/AdminStats';
+import StudyAssistant from './pages/StudyAssistant';
 import NotFound from './pages/NotFound';
 import Landing from './pages/Landing';
 import { useAuth } from './context/AuthContext';
@@ -129,6 +130,16 @@ export default function App() {
 
             {/* Notifications Screen */}
             <Route path="/notifications" element={<Notifications />} />
+
+            {/* Study Assistant Screen */}
+            <Route
+              path="/assistant"
+              element={
+                <ProtectedRoute allowedRoles={['student', 'mentor', 'coordinator', 'admin']}>
+                  <StudyAssistant />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           {/* Fallback 404 Route */}

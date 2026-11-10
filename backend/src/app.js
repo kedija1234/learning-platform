@@ -10,6 +10,7 @@ import {
 import internshipsRoutes from './features/internships/internships.routes.js';
 import notificationsRoutes from './features/notifications/notifications.routes.js';
 import adminRoutes from './features/admin/admin.routes.js';
+import assistantRoutes from './features/assistant/assistant.routes.js';
 import notFoundHandler from './middleware/notFoundHandler.js';
 import errorHandler from './middleware/errorHandler.js';
 
@@ -39,6 +40,7 @@ app.use('/api/assignments', assignmentSubmissionsRouter);
 app.use('/api/internships', internshipsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/assistant', assistantRoutes);
 
 // Catch 404 routes
 app.use(notFoundHandler);

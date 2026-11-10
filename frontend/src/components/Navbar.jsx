@@ -162,6 +162,13 @@ export default function Navbar() {
                   >
                     <span>My grades</span>
                   </Link>
+                  <Link
+                    to="/assistant"
+                    className={`nav-link ${isActive("/assistant")}`}
+                    onClick={closeMenu}
+                  >
+                    <span>Study Assistant</span>
+                  </Link>
                 </>
               )}
 
@@ -180,6 +187,13 @@ export default function Navbar() {
                     onClick={closeMenu}
                   >
                     <span>New course</span>
+                  </Link>
+                  <Link
+                    to="/assistant"
+                    className={`nav-link ${isActive("/assistant")}`}
+                    onClick={closeMenu}
+                  >
+                    <span>Study Assistant</span>
                   </Link>
                 </>
               )}
